@@ -1,0 +1,29 @@
+Tournament
+----------
+- id: [unique identifier]
+- name: [string]
+- date: [date]
+- type: [string, e.g., 'Singles', 'Doubles']
+- totalPlayers: [integer, total number of players who entered the tournament]
+- matches: [array of match IDs]
+
+
+Match
+-----
+- id: [unique identifier]
+- matchType: [string, e.g., 'Singles', 'Doubles']
+- playersTeamA: [array of one or two player IDs for Team A]
+- playersTeamB: [array of one or two player IDs for Team B]
+- scoresTeamA: [integer, total score for Team A]
+- scoresTeamB: [integer, total score for Team B]
+- status: [string, e.g., 'pending', 'ongoing', 'completed']
+- timeouts: [array of timeouts with player IDs and timestamps]
+- wipes: [array of wipes with player IDs and timestamps]
+
+Player
+------
+- id: [unique identifier]
+- name: [string]
+- email: [string, optional]
+- categoryRank: [string, e.g., 'A', 'B', 'C']
+- overallRank: [integer, player's ranking within the category]
