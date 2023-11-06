@@ -15,7 +15,7 @@ let tournaments = [];
 function getTournament(req, res) {
   const { id } = req.query;
   if (id) {
-    const tournament = tournaments.find((t) => t.id === id);
+    const tournament = tournaments.find((tournament) => tournament.id === id);
     if (tournament) {
       res.status(StatusCodes.OK).json(tournament);
     } else {
@@ -57,19 +57,26 @@ function createTournament(req, res) {
  */
 function updateTournament(req, res) {
   // Locate tournament index by ID or return -1 if not found.
+
+  const { id } = req.query;
+
   const index = tournaments.findIndex(
-    (tournament) => tournament.id === req.query.id
+    (tournament) => tournament.id.toString() === id
   );
 
   // If tournament exists, update its details and return the updated object.
   if (index !== -1) {
-    Object.assign(tournaments[index], req.body);
+    const {name,date,type,totalPlayers} = req.body
+    tournaments[index] = {...tournaments[index], name,date,type,totalPlayers}
     res.status(StatusCodes.OK).json(tournaments[index]);
   } else {
     // If not found, return a 404 error.
     res.status(StatusCodes.NOT_FOUND).json({ message: "Tournament not found" });
   }
 }
+
+
+
 
 /**
  * Deletes a tournament based on its ID.
