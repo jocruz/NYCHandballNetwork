@@ -14,22 +14,16 @@ let tournaments = [];
  */
 function getSingleTournament(req, res) {
   const { id } = req.query;
-  if (id) {
-    const tournament = tournaments.find((tournament) => tournament.id === id);
-    if (tournament) {
-      res.status(StatusCodes.OK).json(tournament);
-    } else {
-      res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ message: "Tournament not found" });
-    }
+  const tournament = tournaments.find((tournament) => tournament.id === id);
+  if (tournament !== 1) {
+    res.status(StatusCodes.OK).json(tournament);
   } else {
-    res.status(StatusCodes.OK).json(tournaments);
+    res.status(StatusCodes.NOT_FOUND).json({ message: "Tournament not found" });
   }
 }
 
-function getAllTournaments(req,res){
-  return res.status(StatusCodes.OK).json(tournaments)
+function getAllTournaments(req, res) {
+  return res.status(StatusCodes.OK).json(tournaments);
 }
 /**
  * Creates a new tournament with the provided information in the request body.
@@ -39,7 +33,7 @@ function getAllTournaments(req,res){
  * @param {Object} res - The response object to send back the created tournament data.
  */
 function createTournament(req, res) {
-  const { name, date, type, totalPlayers,location,matches=[]} = req.body;
+  const { name, date, type, totalPlayers, location, matches = [] } = req.body;
   const newTournament = {
     id: Date.now().toString(),
     name,
@@ -70,7 +64,7 @@ function updateTournament(req, res) {
 
   // If tournament exists, update its details and return the updated object.
   if (index !== -1) {
-    const { name, date, type, totalPlayers, location} = req.body;
+    const { name, date, type, totalPlayers, location } = req.body;
     tournaments[index] = {
       ...tournaments[index],
       name,
@@ -118,14 +112,14 @@ function deleteTournament(req, res) {
  */
 export default function handler(req, res) {
   // Use a switch statement to route to the correct function based on the HTTP method
-  const {id} = req.query
+  const { id } = req.query;
   switch (req.method) {
     case "GET":
       // Handle GET requests with the getTournament function
-      if(id){
-        getSingleTournament(req,res)
-      }else{
-        getAllTournaments(req,res)
+      if (id) {
+        getSingleTournament(req, res);
+      } else {
+        getAllTournaments(req, res);
       }
       break;
     case "POST":

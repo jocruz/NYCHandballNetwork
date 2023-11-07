@@ -20,26 +20,6 @@ function getAllPlayers(req, res) {
  * @param {Object} res - The response object to send back the created player data.
  */
 
-function createPlayer(req, res) {
-  const {
-    name,
-    email,
-    categoryRank,
-    overallRank,
-    tournamentIds = [],
-  } = req.body;
-  const newPlayers = {
-    id: Date.now().toString(),
-    name,
-    email, //optional
-    categoryRank,
-    overallRank,
-    tournamentIds,
-  };
-  players.push(newPlayers);
-  res.status(StatusCodes.CREATED).json(newPlayers);
-}
-
 /**
  * Retrieves player(s) information.
  * If an ID is provided in the query, it fetches a specific player.
@@ -63,6 +43,26 @@ function getSinglePlayer(req, res) {
   } else {
     res.status(StatusCodes.NOT_FOUND).json({ message: "player not found" });
   }
+}
+
+function createPlayer(req, res) {
+  const {
+    name,
+    email,
+    categoryRank,
+    overallRank,
+    tournamentIds = [],
+  } = req.body;
+  const newPlayers = {
+    id: Date.now().toString(),
+    name,
+    email, //optional
+    categoryRank,
+    overallRank,
+    tournamentIds,
+  };
+  players.push(newPlayers);
+  res.status(StatusCodes.CREATED).json(newPlayers);
 }
 
 /**

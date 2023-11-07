@@ -2,10 +2,56 @@ import { StatusCodes } from "http-status-codes";
 
 let matches = [];
 
-function getMatches(req, res) {
+function getAllMatches(req, res) {
   return res.status(StatusCodes.OK).json(matches);
 }
 
+function getSingleMatch(req, res) {
+  const { id } = req.query;
+  const index = matches.findIndex((match) => match.id === id);
+  if (index !== -1) {
+    return res.status(StatusCodes.OK).json(matches[index]);
+  } else {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ message: "Match was not found" });
+  }
+}
+
+function createMatches(req, res) {
+  const {
+    matchType,
+    gameType,
+    playersTeamA,
+    playersTeamB,
+    scoresTeamA,
+    scoresTeamB,
+    status,
+    timeouts,
+    wipes,
+    scheduledTime,
+    nextMatchId,
+  } = req.body;
+
+  const newMatch = {
+    id: Date.now().toString(),
+    matchType,
+    gameType,
+    playersTeamA,
+    playersTeamB,
+    scoresTeamA: Number(scoresTeamA),
+    scoresTeamB: Number(scoresTeamB),
+    status,
+    timeouts: timeouts || [],
+    wipes: wipes || [],
+    scheduledTime: new Date(scheduledTime).toISOString(),
+    nextMatchId,
+  };
+
+  matches.push(newMatch);
+
+  return res.status(StatusCodes.CREATED).json(newMatch);
+}
 /**
  * The main handler for routing HTTP requests to the appropriate function
  * based on the HTTP method specified in the request.
@@ -15,10 +61,16 @@ function getMatches(req, res) {
  */
 export default function handler(req, res) {
   // Use a switch statement to route to the correct function based on the HTTP method
+  const { id } = req.query;
+
   switch (req.method) {
     case "GET":
       // Handle GET requests with the getMatches function
-      getMatches(req, res);
+      if (id) {
+        getSingleMatch(req, res);
+      } else {
+        getAllMatches(req, res);
+      }
       break;
     case "POST":
       // Handle POST requests with the createMatches function

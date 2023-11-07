@@ -18,7 +18,7 @@ Match
 {
   id: String, // Unique identifier
   matchType: String, // Type of match (e.g., 'Singles', 'Doubles')
-  gameType: Integer,
+  gameType: Integer, // 21 or 25 or 11
   playersTeamA: [String], // Array of player IDs for Team A
   playersTeamB: [String], // Array of player IDs for Team B
   scoresTeamA: Number, // Total score for Team A
