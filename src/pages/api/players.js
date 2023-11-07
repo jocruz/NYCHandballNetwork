@@ -41,13 +41,20 @@ function getPlayer(req, res) {
 // - overallRank: [integer, player's ranking within the category]
 
 function createPlayer(req, res) {
-  const { name, email, categoryRank, overallRank } = req.body;
-  const newPlayers = {
-    id: Date.now().toString(),
+  const {
     name,
     email,
     categoryRank,
     overallRank,
+    tournamentIds = [],
+  } = req.body;
+  const newPlayers = {
+    id: Date.now().toString(),
+    name,
+    email, //optional
+    categoryRank,
+    overallRank,
+    tournamentIds,
   };
   players.push(newPlayers);
   res.status(StatusCodes.CREATED).json(newPlayers);
@@ -60,15 +67,32 @@ function createPlayer(req, res) {
  * @param {Object} res - The response object to send back the updated player data.
  */
 function updatePlayer(req, res) {
-  // Locate player index by ID or return -1 if not found.
-  const index = players.findIndex((player) => player.id === req.query.id);
+  const { id } = req.query;
+  const index = players.findIndex((player) => player.id === id);
 
-  // If player exists, update its details and return the updated object.
   if (index !== -1) {
-    Object.assign(players[index], req.body);
+    const {
+      name,
+      email, //optional
+      categoryRank,
+      overallRank,
+      tournamentIds, // This is the array of tournament IDs to update
+    } = req.body;
+
+    // Update the player information with the new details, if provided
+    const updatedPlayerInfo = {
+      ...(name && { name }),
+      ...(email && { email }),
+      ...(categoryRank && { categoryRank }),
+      ...(overallRank && { overallRank }),
+      ...(tournamentIds && { tournamentIds }), // Update the tournamentIds if provided
+    };
+
+    // Merge the existing player object with the updated player info
+    players[index] = { ...players[index], ...updatedPlayerInfo };
+
     res.status(StatusCodes.OK).json(players[index]);
   } else {
-    // If not found, return a 404 error.
     res.status(StatusCodes.NOT_FOUND).json({ message: "Player not found" });
   }
 }

@@ -36,13 +36,14 @@ function getTournament(req, res) {
  * @param {Object} res - The response object to send back the created tournament data.
  */
 function createTournament(req, res) {
-  const { name, date, type, totalPlayers } = req.body;
+  const { name, date, type, totalPlayers,location } = req.body;
   const newTournament = {
     id: Date.now().toString(),
     name,
     date,
     type,
     totalPlayers,
+    location,
     matches: [],
   };
   tournaments.push(newTournament);
@@ -66,12 +67,13 @@ function updateTournament(req, res) {
 
   // If tournament exists, update its details and return the updated object.
   if (index !== -1) {
-    const { name, date, type, totalPlayers } = req.body;
+    const { name, date, type, totalPlayers, location} = req.body;
     tournaments[index] = {
       ...tournaments[index],
       name,
       date,
       type,
+      location,
       totalPlayers,
     };
     res.status(StatusCodes.OK).json(tournaments[index]);

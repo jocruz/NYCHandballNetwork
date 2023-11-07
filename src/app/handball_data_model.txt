@@ -1,29 +1,55 @@
 Tournament
 ----------
-- id: [unique identifier]
-- name: [string]
-- date: [date]
-- type: [string, e.g., 'Singles', 'Doubles']
-- totalPlayers: [integer, total number of players who entered the tournament]
-- matches: [array of match IDs]
+{
+  id: String, // Unique identifier, consider using UUID or NanoID
+  name: String, // Name of the tournament
+  date: Date, // Date of the tournament
+  type: String, // Type of play (e.g., 'Singles', 'Doubles')
+  totalPlayers: Number, // Total number of players who entered the tournament
+  matches: [String], // Array of match IDs
+  playerIds: [String], // Array of participating player IDs
+  location: String, // Location of the tournament
+  // Additional fields for bracket management, scheduling, etc., could be added as needed
+}
 
 
 Match
 -----
-- id: [unique identifier]
-- matchType: [string, e.g., 'Singles', 'Doubles']
-- playersTeamA: [array of one or two player IDs for Team A]
-- playersTeamB: [array of one or two player IDs for Team B]
-- scoresTeamA: [integer, total score for Team A]
-- scoresTeamB: [integer, total score for Team B]
-- status: [string, e.g., 'pending', 'ongoing', 'completed']
-- timeouts: [array of timeouts with player IDs and timestamps]
-- wipes: [array of wipes with player IDs and timestamps]
+{
+  id: String, // Unique identifier
+  matchType: String, // Type of match (e.g., 'Singles', 'Doubles')
+  playersTeamA: [String], // Array of player IDs for Team A
+  playersTeamB: [String], // Array of player IDs for Team B
+  scoresTeamA: Number, // Total score for Team A
+  scoresTeamB: Number, // Total score for Team B
+  status: String, // Status of the match (e.g., 'Pending', 'Ongoing', 'Completed')
+  timeouts: [
+    {
+      playerId: String,
+      timestamp: Date,
+    },
+  ], // Array of timeouts with player IDs and timestamps
+  wipes: [
+    {
+      playerId: String,
+      timestamp: Date,
+    },
+  ], // Array of wipes with player IDs and timestamps
+  scheduledTime: Date, // Scheduled time for the match
+  nextMatchId: String, // ID of the subsequent match for the winner
+  // Other properties for bracket progression
+}
+
 
 Player
 ------
-- id: [unique identifier]
-- name: [string]
-- email: [string, optional]
-- categoryRank: [string, e.g., 'A', 'B', 'C']
-- overallRank: [integer, player's ranking within the category]
+{
+  id: String, // Unique identifier
+  name: String, // Name of the player
+  email: String, // Email of the player (optional)
+  categoryRank: String, // Rank category of the player (e.g., 'A', 'B', 'C')
+  overallRank: Number, // Overall ranking of the player within the category
+  tournamentIds: [String], // Array of tournament IDs the player has participated in
+  // Additional fields for scheduling, notification preferences, etc.
+}
+
