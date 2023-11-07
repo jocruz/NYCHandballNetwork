@@ -62,22 +62,24 @@ function updateTournament(req, res) {
     (tournament) => tournament.id.toString() === id
   );
 
-  // If tournament exists, update its details and return the updated object.
-  if (index !== -1) {
-    const { name, date, type, totalPlayers, location } = req.body;
-    tournaments[index] = {
-      ...tournaments[index],
-      name,
-      date,
-      type,
-      location,
-      totalPlayers,
-    };
-    res.status(StatusCodes.OK).json(tournaments[index]);
-  } else {
-    // If not found, return a 404 error.
-    res.status(StatusCodes.NOT_FOUND).json({ message: "Tournament not found" });
+  if (index === -1) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ message: "Match not found" });
   }
+
+  // If tournament exists, update its details and return the updated object.
+
+  const { name, date, type, totalPlayers, location } = req.body;
+  tournaments[index] = {
+    ...tournaments[index],
+    name,
+    date,
+    type,
+    location,
+    totalPlayers,
+  };
+  res.status(StatusCodes.OK).json(tournaments[index]);
 }
 
 /**
