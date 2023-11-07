@@ -52,6 +52,72 @@ function createMatches(req, res) {
 
   return res.status(StatusCodes.CREATED).json(newMatch);
 }
+
+function updateMatch(req, res) {
+  const { id } = req.query;
+  const {
+    matchType,
+    gameType,
+    playersTeamA,
+    playersTeamB,
+    scoresTeamA,
+    scoresTeamB,
+    status,
+    scheduledTime,
+    nextMatchId,
+  } = req.body;
+
+  const updatedMatch = {
+    ...(matchType !== undefined && { matchType }),
+    ...(gameType !== undefined && { gameType: Number(gameType) }),
+    ...(playersTeamA !== undefined && { playersTeamA }),
+    ...(playersTeamB !== undefined && { playersTeamB }),
+    ...(scoresTeamA !== undefined && { scoresTeamA: Number(scoresTeamA) }),
+    ...(scoresTeamB !== undefined && { scoresTeamB: Number(scoresTeamB) }),
+    ...(status !== undefined && { status }),
+    ...(scheduledTime !== undefined && {
+      scheduledTime: new Date(scheduledTime).toISOString(),
+    }), // Assuming you want to store the date in ISO format
+    ...(nextMatchId !== undefined && { nextMatchId }),
+  };
+
+  const index = matches.findIndex((match) => match.id === id);
+
+  if (index === -1) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ message: "Match not found" });
+  }
+
+  matches[index] = { ...matches[index], ...updatedMatch };
+
+  return res.status(StatusCodes.OK).json(matches[index]);
+}
+
+function deleteMatch(req, res) {
+  const { id } = req.query;
+
+  if (!id) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "ID was not provided" });
+  }
+
+  const matchExists = matches.some((match) => match.id === id);
+  if (!matchExists) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ message: "Match not found" });
+  }
+
+  const remainingMatches = matches.filter((match) => match.id !== id);
+  matches = remainingMatches; // Update the matches array
+
+  return res
+    .status(StatusCodes.OK)
+    .json({ message: `Match with ID ${id} was deleted` });
+}
+
 /**
  * The main handler for routing HTTP requests to the appropriate function
  * based on the HTTP method specified in the request.
@@ -78,11 +144,15 @@ export default function handler(req, res) {
       break;
     case "PUT":
       // Handle PUT requests with the updateMatches function
-      updateMatches(req, res);
+      if (id) {
+        updateMatch(req, res);
+      }
       break;
     case "DELETE":
       // Handle DELETE requests with the deleteMatches function
-      deleteMatches(req, res);
+      if (id) {
+        deleteMatch(req, res);
+      }
       break;
     default:
       // Set the header to inform the client which methods are allowed
