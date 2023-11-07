@@ -12,7 +12,7 @@ let tournaments = [];
  * @param {Object} req - The request object from the client, including query parameters.
  * @param {Object} res - The response object to send back the tournament data.
  */
-function getTournament(req, res) {
+function getSingleTournament(req, res) {
   const { id } = req.query;
   if (id) {
     const tournament = tournaments.find((tournament) => tournament.id === id);
@@ -28,6 +28,9 @@ function getTournament(req, res) {
   }
 }
 
+function getAllTournaments(req,res){
+  return res.status(StatusCodes.OK).json(tournaments)
+}
 /**
  * Creates a new tournament with the provided information in the request body.
  * Generates a unique ID for the tournament and appends it to the in-memory array.
@@ -36,7 +39,7 @@ function getTournament(req, res) {
  * @param {Object} res - The response object to send back the created tournament data.
  */
 function createTournament(req, res) {
-  const { name, date, type, totalPlayers,location } = req.body;
+  const { name, date, type, totalPlayers,location,matches=[]} = req.body;
   const newTournament = {
     id: Date.now().toString(),
     name,
@@ -115,10 +118,15 @@ function deleteTournament(req, res) {
  */
 export default function handler(req, res) {
   // Use a switch statement to route to the correct function based on the HTTP method
+  const {id} = req.query
   switch (req.method) {
     case "GET":
       // Handle GET requests with the getTournament function
-      getTournament(req, res);
+      if(id){
+        getSingleTournament(req,res)
+      }else{
+        getAllTournaments(req,res)
+      }
       break;
     case "POST":
       // Handle POST requests with the createTournament function

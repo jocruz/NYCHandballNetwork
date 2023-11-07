@@ -3,25 +3,13 @@ import { StatusCodes } from "http-status-codes";
 let players = [];
 
 /**
- * Retrieves player(s) information.
- * If an ID is provided in the query, it fetches a specific player.
- * Otherwise, it returns all players.
+ * Retrieves the information of all players.
  *
- * @param {Object} req - The request object from the client, including query parameters.
- * @param {Object} res - The response object to send back the player data.
+ * @param {Object} req - The request object from the client.
+ * @param {Object} res - The response object to send back all player data.
  */
-function getPlayer(req, res) {
-  const { id } = req.query;
-  if (id) {
-    const player = players.find((player) => player.id === id);
-    if (player) {
-      res.status(StatusCodes.OK).json(player);
-    } else {
-      res.status(StatusCodes.NOT_FOUND).json({ message: "player not found" });
-    }
-  } else {
-    res.status(StatusCodes.OK).json(players);
-  }
+function getAllPlayers(req, res) {
+  res.status(StatusCodes.OK).json(players);
 }
 
 /**
@@ -31,14 +19,6 @@ function getPlayer(req, res) {
  * @param {Object} req - The request object from the client, including body with player details.
  * @param {Object} res - The response object to send back the created player data.
  */
-
-// Player
-// ------
-// - id: [unique identifier]
-// - name: [string]
-// - email: [string, optional]
-// - categoryRank: [string, e.g., 'A', 'B', 'C']
-// - overallRank: [integer, player's ranking within the category]
 
 function createPlayer(req, res) {
   const {
@@ -58,6 +38,31 @@ function createPlayer(req, res) {
   };
   players.push(newPlayers);
   res.status(StatusCodes.CREATED).json(newPlayers);
+}
+
+/**
+ * Retrieves player(s) information.
+ * If an ID is provided in the query, it fetches a specific player.
+ * Otherwise, it returns all players.
+ *
+ * @param {Object} req - The request object from the client, including query parameters.
+ * @param {Object} res - The response object to send back the player data.
+ */
+
+function getSinglePlayer(req, res) {
+  const { id } = req.query;
+  if (!id || id.trim() === "") {
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "ID was not provided or is empty" });
+    return;
+  }
+  const player = players.find((player) => player.id === id);
+  if (player) {
+    res.status(StatusCodes.OK).json(player);
+  } else {
+    res.status(StatusCodes.NOT_FOUND).json({ message: "player not found" });
+  }
 }
 
 /**
@@ -105,7 +110,8 @@ function updatePlayer(req, res) {
  */
 function deletePlayer(req, res) {
   // Filter out the player with the given ID.
-  const newPlayers = players.filter((player) => player.id !== req.query.id);
+  const { id } = req.query;
+  const newPlayers = players.filter((player) => player.id !== id);
 
   // Check if the player array length is reduced after filtering.
   if (newPlayers.length !== players.length) {
@@ -127,26 +133,32 @@ function deletePlayer(req, res) {
  */
 export default function handler(req, res) {
   // Use a switch statement to route to the correct function based on the HTTP method
+  const { id } = req.query;
   switch (req.method) {
     case "GET":
-      // Handle GET requests with the getPlayer function
-      getPlayer(req, res);
+      if (id) {
+        getSinglePlayer(req, res);
+      } else {
+        getAllPlayers(req, res);
+      }
       break;
     case "POST":
       // Handle POST requests with the createPlayer function
       createPlayer(req, res);
       break;
     case "PUT":
-      // Handle PUT requests with the updatePlayer function
-      updatePlayer(req, res);
+      // Handle POST requests with the createPlayer function
+      if (id) {
+        updatePlayer(req, res);
+      }
       break;
     case "DELETE":
-      // Handle DELETE requests with the deletePlayer function
-      deletePlayer(req, res);
-      break;
+      if (id) {
+        deletePlayer(req, res);
+      }
     default:
       // Set the header to inform the client which methods are allowed
-      res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]);
+      res.setHeader("Allow", ["GET", "POST"]);
       // If the HTTP method is not supported, return a 405 Method Not Allowed status
       res
         .status(StatusCodes.METHOD_NOT_ALLOWED)
