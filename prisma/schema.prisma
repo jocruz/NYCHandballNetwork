@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id             String     @id @default(uuid())
+  name           String
+  email          String? @unique   // Nullable since email might be optional
+  categoryRank   String
+  overallRank    Int
+  tournaments    Tournament[] @relation("PlayerTournaments")
+  matchesAsTeamA Match[] @relation("PlayersTeamA")
+  matchesAsTeamB Match[] @relation("PlayersTeamB")
+  timeouts       Timeout[]
+  wipes          Wipe[]
+  @@map("players")
+}
+
+model Tournament {
+  id            String   @id @default(uuid())
+  name          String
+  date          DateTime
+  type          String
+  totalPlayers  Int
+  matches       Match[]
+  players       Player[] @relation("PlayerTournaments")
+  location      String
+  @@map("tournaments")
+}
+
+model Match {
+  id            String     @id @default(uuid())
+  matchType     String
+  gameType      Int
+  playersTeamA  Player[]   @relation("PlayersTeamA")
+  playersTeamB  Player[]   @relation("PlayersTeamB")
+  scoresTeamA   Int
+  scoresTeamB   Int
+  status        String
+  scheduledTime DateTime
+  tournament    Tournament @relation(fields: [tournamentId], references: [id])
+  tournamentId  String
+  timeouts      Timeout[]
+  wipes         Wipe[]
+  @@map("matches")
+}
+
+
+model Timeout {
+  timeoutId        String    @id @default(uuid())
+  match            Match     @relation(fields: [matchId], references: [id])
+  matchId          String
+  player           Player    @relation(fields: [playerId], references: [id])
+  playerId         String
+  timeoutType      String
+  timeoutDuration  String    // Storing interval as String, Prisma doesn't support interval type
+  timeoutTimestamp DateTime
+  @@map("timeouts")
+}
+
+model Wipe {
+  wipeId        String    @id @default(uuid())
+  match         Match     @relation(fields: [matchId], references: [id])
+  matchId       String
+  player        Player    @relation(fields: [playerId], references: [id])
+  playerId      String
+  wipeTimestamp DateTime
+  @@map("wipes")
+}
