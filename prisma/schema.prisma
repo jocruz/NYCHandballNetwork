@@ -28,7 +28,7 @@ model Tournament {
   name          String
   date          DateTime
   type          String
-  totalPlayers  Int
+  totalPlayers  Int?
   matches       Match[]
   players       Player[] @relation("PlayerTournaments")
   location      String

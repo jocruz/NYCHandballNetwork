@@ -1,4 +1,8 @@
 import { StatusCodes } from "http-status-codes";
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient({
+  errorFormat: 'pretty',
+})
 
 // Simple in-memory array until we can get a db set up
 
@@ -12,19 +16,20 @@ let tournaments = [];
  * @param {Object} req - The request object from the client, including query parameters.
  * @param {Object} res - The response object to send back the tournament data.
  */
-function getSingleTournament(req, res) {
-  const { id } = req.query;
-  const tournament = tournaments.find((tournament) => tournament.id === id);
-  if (tournament !== 1) {
-    res.status(StatusCodes.OK).json(tournament);
-  } else {
-    res.status(StatusCodes.NOT_FOUND).json({ message: "Tournament not found" });
+async function getAllTournaments(req, res) {
+  try {
+    const tournaments = await prisma.tournament.findMany();
+    res.status(StatusCodes.OK).json(tournaments);
+  } catch (error) {
+    console.error(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Failed to fetch tournaments" });
+  } finally {
+    // This will run whether or not the try block succeeds
+    await prisma.$disconnect();
   }
 }
 
-function getAllTournaments(req, res) {
-  return res.status(StatusCodes.OK).json(tournaments);
-}
+
 /**
  * Creates a new tournament with the provided information in the request body.
  * Generates a unique ID for the tournament and appends it to the in-memory array.
