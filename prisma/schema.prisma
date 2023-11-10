@@ -25,7 +25,7 @@ model Player {
 
 model Tournament {
   id            String   @id @default(uuid())
-  name          String
+  name          String @unique
   date          DateTime
   type          String
   totalPlayers  Int?

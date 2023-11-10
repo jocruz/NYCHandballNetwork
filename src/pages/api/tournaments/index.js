@@ -89,6 +89,18 @@ const deleteTournament = asyncHandler(async (req, res) => {
   });
 });
 
+const deleteAllTournaments = async (req, res) => {
+  try {
+    const deleteMany = await prisma.tournament.deleteMany({});
+    console.log(`Deleted ${deleteMany.count} tournaments.`);
+    return res
+      .status(StatusCodes.OK)
+      .json({ message: `Deleted ${deleteMany.count} tournaments.` });
+  } catch (error) {
+    console.error("Error deleting tournaments:", error);
+  }
+};
+
 /**
  * The main handler for routing HTTP requests to the appropriate function
  * based on the HTTP method specified in the request.
@@ -118,7 +130,11 @@ export default function handler(req, res) {
       break;
     case "DELETE":
       // Handle DELETE requests with the deleteTournament function
-      deleteTournament(req, res);
+      if (id) {
+        deleteTournament(req, res);
+      } else {
+        deleteAllTournaments(req, res);
+      }
       break;
     default:
       // Set the header to inform the client which methods are allowed
