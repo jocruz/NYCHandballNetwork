@@ -1,15 +1,15 @@
 import { StatusCodes } from "http-status-codes";
 import { PrismaClient } from "@prisma/client";
+import { asyncHandler } from "../utils/asyncHandler";
+
 const prisma = new PrismaClient({
   errorFormat: "pretty",
 });
 
-import { asyncHandler } from "../utils/asyncHandler";
-
 const getAllTournaments = asyncHandler(async (req, res) => {
   const allTournaments = await prisma.tournament.findMany();
   return res.status(StatusCodes.OK).json(allTournaments);
-});
+}, "Tournament");
 
 const getSingleTournament = asyncHandler(async (req, res) => {
   const { id } = req.query;
@@ -32,7 +32,7 @@ const getSingleTournament = asyncHandler(async (req, res) => {
     error.statusCode = StatusCodes.NOT_FOUND;
     throw error;
   }
-});
+}, "Tournament");
 
 const createTournament = asyncHandler(async (req, res) => {
   const { name, date, type, totalPlayers, location } = req.body;
@@ -48,7 +48,7 @@ const createTournament = asyncHandler(async (req, res) => {
   });
 
   res.status(StatusCodes.CREATED).json(newTournament);
-});
+}, "Tournament");
 
 const updateTournament = asyncHandler(async (req, res) => {
   // Locate tournament index by ID or return -1 if not found.
@@ -70,7 +70,7 @@ const updateTournament = asyncHandler(async (req, res) => {
     message: `the tournament was updated at ID ${id}`,
     tournament: updatedTournament,
   });
-});
+}, "Tournament");
 
 const deleteTournament = asyncHandler(async (req, res) => {
   const { id } = req.query;
@@ -87,7 +87,7 @@ const deleteTournament = asyncHandler(async (req, res) => {
     message: `Tournament with ID: ${id} was deleted successfully.`,
     tournament: deletedTournament,
   });
-});
+}, "Tournament");
 
 const deleteAllTournaments = async (req, res) => {
   try {
@@ -108,32 +108,32 @@ const deleteAllTournaments = async (req, res) => {
  * @param {Object} req - The HTTP request object from the client.
  * @param {Object} res - The HTTP response object for sending replies back to the client.
  */
-export default function handler(req, res) {
+const handler = async (req, res) => {
   // Use a switch statement to route to the correct function based on the HTTP method
   const { id } = req.query;
   switch (req.method) {
     case "GET":
       // Handle GET requests with the getTournament function
       if (id) {
-        getSingleTournament(req, res);
+        await getSingleTournament(req, res);
       } else {
-        getAllTournaments(req, res);
+        await getAllTournaments(req, res);
       }
       break;
     case "POST":
       // Handle POST requests with the createTournament function
-      createTournament(req, res);
+      await createTournament(req, res);
       break;
     case "PUT":
       // Handle PUT requests with the updateTournament function
-      updateTournament(req, res);
+      await updateTournament(req, res);
       break;
     case "DELETE":
       // Handle DELETE requests with the deleteTournament function
       if (id) {
-        deleteTournament(req, res);
+        await deleteTournament(req, res);
       } else {
-        deleteAllTournaments(req, res);
+        await deleteAllTournaments(req, res);
       }
       break;
     default:
@@ -144,4 +144,6 @@ export default function handler(req, res) {
         .status(StatusCodes.METHOD_NOT_ALLOWED)
         .end(`Method ${req.method} Not Allowed`);
   }
-}
+};
+
+export default handler;

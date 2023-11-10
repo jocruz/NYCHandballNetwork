@@ -1,16 +1,20 @@
 import { StatusCodes } from "http-status-codes";
+import { PrismaClient } from "@prisma/client";
+import { asyncHandler } from "../utils/asyncHandler";
 
-let players = [];
-
+const prisma = new PrismaClient({
+  errorFormat: "pretty",
+});
 /**
  * Retrieves the information of all players.
  *
  * @param {Object} req - The request object from the client.
  * @param {Object} res - The response object to send back all player data.
  */
-function getAllPlayers(req, res) {
-  res.status(StatusCodes.OK).json(players);
-}
+const getAllPlayers = asyncHandler(async (req, res) => {
+  const allPlayers = await prisma.player.findMany();
+  return res.status(StatusCodes.OK).json(allPlayers);
+}, "Players");
 
 /**
  * Creates a new player with the provided information in the request body.
@@ -45,25 +49,20 @@ function getSinglePlayer(req, res) {
   }
 }
 
-function createPlayer(req, res) {
-  const {
-    name,
-    email,
-    categoryRank,
-    overallRank,
-    tournamentIds = [],
-  } = req.body;
-  const newPlayers = {
-    id: Date.now().toString(),
-    name,
-    email, //optional
-    categoryRank,
-    overallRank,
-    tournamentIds,
-  };
-  players.push(newPlayers);
-  res.status(StatusCodes.CREATED).json(newPlayers);
-}
+const createPlayer = asyncHandler(async (req, res) => {
+  const { name, email, categoryRank, overallRank } = req.body;
+
+  const newPlayer = await prisma.player.create({
+    data: {
+      name: name,
+      email: email,
+      categoryRank: categoryRank,
+      overallRank: overallRank,
+    },
+  });
+
+  return res.status(StatusCodes.CREATED).json(newPlayer);
+}, "Players");
 
 /**
  * Updates a player's information based on its ID.
@@ -131,30 +130,30 @@ function deletePlayer(req, res) {
  * @param {Object} req - The HTTP request object from the client.
  * @param {Object} res - The HTTP response object for sending replies back to the client.
  */
-export default function handler(req, res) {
+const handler = async (req, res) => {
   // Use a switch statement to route to the correct function based on the HTTP method
   const { id } = req.query;
   switch (req.method) {
     case "GET":
       if (id) {
-        getSinglePlayer(req, res);
+        await getSinglePlayer(req, res);
       } else {
-        getAllPlayers(req, res);
+        await getAllPlayers(req, res);
       }
       break;
     case "POST":
       // Handle POST requests with the createPlayer function
-      createPlayer(req, res);
+      await createPlayer(req, res);
       break;
     case "PUT":
       // Handle POST requests with the createPlayer function
       if (id) {
-        updatePlayer(req, res);
+        await updatePlayer(req, res);
       }
       break;
     case "DELETE":
       if (id) {
-        deletePlayer(req, res);
+        await deletePlayer(req, res);
       }
     default:
       // Set the header to inform the client which methods are allowed
@@ -164,4 +163,6 @@ export default function handler(req, res) {
         .status(StatusCodes.METHOD_NOT_ALLOWED)
         .end(`Method ${req.method} Not Allowed`);
   }
-}
+};
+
+export default handler;
