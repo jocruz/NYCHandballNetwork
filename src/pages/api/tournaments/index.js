@@ -1,10 +1,6 @@
 import { StatusCodes } from "http-status-codes";
-import { PrismaClient } from "@prisma/client";
+import prisma from '../../../prismaClient'
 import { asyncHandler } from "../utils/asyncHandler";
-
-const prisma = new PrismaClient({
-  errorFormat: "pretty",
-});
 
 /**
  * Retrieves all tournaments.

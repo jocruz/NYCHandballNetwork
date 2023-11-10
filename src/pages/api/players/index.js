@@ -1,15 +1,14 @@
 import { StatusCodes } from "http-status-codes";
-import { PrismaClient } from "@prisma/client";
 import { asyncHandler } from "../utils/asyncHandler";
+import prisma from '../../../prismaClient';
 
-const prisma = new PrismaClient({
-  errorFormat: "pretty",
-});
 /**
- * Retrieves the information of all players.
+ * Retrieves all players from the database.
  *
- * @param {Object} req - The request object from the client.
- * @param {Object} res - The response object to send back all player data.
+ * @async
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<Response>} A promise that resolves with the response object containing all players.
  */
 const getAllPlayers = asyncHandler(async (req, res) => {
   const allPlayers = await prisma.player.findMany();
@@ -17,38 +16,38 @@ const getAllPlayers = asyncHandler(async (req, res) => {
 }, "Players");
 
 /**
- * Creates a new player with the provided information in the request body.
- * Generates a unique ID for the player and appends it to the in-memory array.
+ * Retrieves a single player by their ID.
  *
- * @param {Object} req - The request object from the client, including body with player details.
- * @param {Object} res - The response object to send back the created player data.
+ * @async
+ * @param {Object} req - The request object, containing the player ID in the query.
+ * @param {Object} res - The response object.
+ * @returns {Promise<Response>} A promise that resolves with the response object containing the player data.
+ * @throws {Error} If the player ID is not provided or the player is not found.
  */
+const getSinglePlayer = asyncHandler(async (req, res) => {
+  const { id } = req.query;
+  if (!id) {
+    const error = new Error("Player ID was not provided");
+    error.statusCode = StatusCodes.NOT_FOUND;
+    throw error;
+  }
+  const player = await prisma.player.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  return res.status(StatusCodes.OK).json({ player });
+}, "Player");
 
 /**
- * Retrieves player(s) information.
- * If an ID is provided in the query, it fetches a specific player.
- * Otherwise, it returns all players.
+ * Creates a new player in the database.
  *
- * @param {Object} req - The request object from the client, including query parameters.
- * @param {Object} res - The response object to send back the player data.
+ * @async
+ * @param {Object} req - The request object, containing player data in the body.
+ * @param {Object} res - The response object.
+ * @returns {Promise<Response>} A promise that resolves with the response object containing the created player data.
  */
-
-function getSinglePlayer(req, res) {
-  const { id } = req.query;
-  if (!id || id.trim() === "") {
-    res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ message: "ID was not provided or is empty" });
-    return;
-  }
-  const player = players.find((player) => player.id === id);
-  if (player) {
-    res.status(StatusCodes.OK).json(player);
-  } else {
-    res.status(StatusCodes.NOT_FOUND).json({ message: "player not found" });
-  }
-}
-
 const createPlayer = asyncHandler(async (req, res) => {
   const { name, email, categoryRank, overallRank } = req.body;
 
@@ -62,71 +61,85 @@ const createPlayer = asyncHandler(async (req, res) => {
   });
 
   return res.status(StatusCodes.CREATED).json(newPlayer);
-}, "Players");
+}, "Player");
 
 /**
- * Updates a player's information based on its ID.
+ * Updates a player's information based on their ID.
  *
- * @param {Object} req - The request object from the client, including query and body.
- * @param {Object} res - The response object to send back the updated player data.
+ * @async
+ * @param {Object} req - The request object, containing the player ID in the query and update data in the body.
+ * @param {Object} res - The response object.
+ * @returns {Promise<Response>} A promise that resolves with the response object containing the updated player data.
+ * @throws {Error} If the player ID is not provided.
  */
-function updatePlayer(req, res) {
+const updatePlayer = asyncHandler(async (req, res) => {
   const { id } = req.query;
-  const index = players.findIndex((player) => player.id === id);
-
-  if (index !== -1) {
-    const {
-      name,
-      email, //optional
-      categoryRank,
-      overallRank,
-      tournamentIds, // This is the array of tournament IDs to update
-    } = req.body;
-
-    // Update the player information with the new details, if provided
-    const updatedPlayerInfo = {
-      ...(name && { name }),
-      ...(email && { email }),
-      ...(categoryRank && { categoryRank }),
-      ...(overallRank && { overallRank }),
-      ...(tournamentIds && { tournamentIds }), // Update the tournamentIds if provided
-    };
-
-    // Merge the existing player object with the updated player info
-    players[index] = { ...players[index], ...updatedPlayerInfo };
-
-    res.status(StatusCodes.OK).json(players[index]);
-  } else {
-    res.status(StatusCodes.NOT_FOUND).json({ message: "Player not found" });
+  if (!id) {
+    const error = new Error("Player ID must be provided");
+    error.statusCode = StatusCodes.BAD_REQUEST;
+    throw error;
   }
-}
+
+  const updatedPlayer = await prisma.player.update({
+    where: {
+      id: id,
+      data: req.body,
+    },
+  });
+
+  return res.status(StatusCodes.OK).json(updatedPlayer);
+}, "Player");
 
 /**
- * Deletes a player based on its ID.
+ * Deletes a player based on their ID.
  *
- * @param {Object} req - The request object from the client, containing the query.
- * @param {Object} res - The response object to send back the deletion confirmation.
+ * @async
+ * @param {Object} req - The request object, containing the player ID in the query.
+ * @param {Object} res - The response object.
+ * @returns {Promise<Response>} A promise that resolves with the response object confirming the deletion.
+ * @throws {Error} If the player ID is not provided.
  */
-function deletePlayer(req, res) {
-  // Filter out the player with the given ID.
+const deletePlayer = async (req, res) => {
   const { id } = req.query;
-  const newPlayers = players.filter((player) => player.id !== id);
-
-  // Check if the player array length is reduced after filtering.
-  if (newPlayers.length !== players.length) {
-    players = newPlayers;
-    // Confirm deletion with a 200 status.
-    res.status(StatusCodes.OK).json({ message: "player deleted" });
-  } else {
-    // If not found, return a 404 error.
-    res.status(StatusCodes.NOT_FOUND).json({ message: "player not found" });
+  if (!id) {
+    const error = new Error("Player ID must be provided");
+    error.statusCode = StatusCodes.BAD_REQUEST;
+    throw error;
   }
-}
+
+  const deletedPlayer = await prisma.player.delete({
+    where: {
+      id: id,
+    },
+  });
+
+  return res
+    .status(StatusCodes.OK)
+    .json({ message: "Player was deleted" }, deletedPlayer);
+};
+
+/**
+ * Deletes all players from the database.
+ *
+ * @async
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<Response>} A promise that resolves with the response object confirming the deletion of all players.
+ */
+const deleteAllPlayers = async (req, res) => {
+  const deleteMany = await prisma.player.deleteMany({});
+
+  console.log(`Deleted ${deleteMany.count} players.`);
+  return res
+    .status(StatusCodes.OK)
+    .json({ message: `Deleted ${deleteMany.count} players.` });
+};
 
 /**
  * The main handler for routing HTTP requests to the appropriate function
  * based on the HTTP method specified in the request.
  *
+ * @async
  * @param {Object} req - The HTTP request object from the client.
  * @param {Object} res - The HTTP response object for sending replies back to the client.
  */
@@ -154,10 +167,12 @@ const handler = async (req, res) => {
     case "DELETE":
       if (id) {
         await deletePlayer(req, res);
+      } else {
+        await deleteAllPlayers(req, res);
       }
     default:
       // Set the header to inform the client which methods are allowed
-      res.setHeader("Allow", ["GET", "POST"]);
+      res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]);
       // If the HTTP method is not supported, return a 405 Method Not Allowed status
       res
         .status(StatusCodes.METHOD_NOT_ALLOWED)
