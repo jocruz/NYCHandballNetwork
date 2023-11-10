@@ -1,114 +1,93 @@
 import { StatusCodes } from "http-status-codes";
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient({
-  errorFormat: 'pretty',
-})
+  errorFormat: "pretty",
+});
 
-// Simple in-memory array until we can get a db set up
+import { asyncHandler } from "../utils/asyncHandler";
 
-let tournaments = [];
+const getAllTournaments = asyncHandler(async (req, res) => {
+  const allTournaments = await prisma.tournament.findMany();
+  return res.status(StatusCodes.OK).json(allTournaments);
+});
 
-/**
- * Retrieves tournament(s) information.
- * If an ID is provided in the query, it fetches a specific tournament.
- * Otherwise, it returns all tournaments.
- *
- * @param {Object} req - The request object from the client, including query parameters.
- * @param {Object} res - The response object to send back the tournament data.
- */
-async function getAllTournaments(req, res) {
-  try {
-    const tournaments = await prisma.tournament.findMany();
-    res.status(StatusCodes.OK).json(tournaments);
-  } catch (error) {
-    console.error(error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Failed to fetch tournaments" });
-  } finally {
-    // This will run whether or not the try block succeeds
-    await prisma.$disconnect();
-  }
-}
-
-
-/**
- * Creates a new tournament with the provided information in the request body.
- * Generates a unique ID for the tournament and appends it to the in-memory array.
- *
- * @param {Object} req - The request object from the client, including body with tournament details.
- * @param {Object} res - The response object to send back the created tournament data.
- */
-function createTournament(req, res) {
-  const { name, date, type, totalPlayers, location, matches = [] } = req.body;
-  const newTournament = {
-    id: Date.now().toString(),
-    name,
-    date,
-    type,
-    totalPlayers,
-    location,
-    matches: [],
-  };
-  tournaments.push(newTournament);
-  res.status(StatusCodes.CREATED).json(newTournament);
-}
-
-/**
- * Updates a tournament's information based on its ID.
- *
- * @param {Object} req - The request object from the client, including query and body.
- * @param {Object} res - The response object to send back the updated tournament data.
- */
-function updateTournament(req, res) {
-  // Locate tournament index by ID or return -1 if not found.
-
+const getSingleTournament = asyncHandler(async (req, res) => {
   const { id } = req.query;
-
-  const index = tournaments.findIndex(
-    (tournament) => tournament.id.toString() === id
-  );
-
-  if (index === -1) {
-    return res
-      .status(StatusCodes.NOT_FOUND)
-      .json({ message: "Match not found" });
+  if (!id) {
+    const error = new Error("Tournament ID must be provided");
+    error.statusCode = StatusCodes.NOT_FOUND;
+    throw error;
   }
 
-  // If tournament exists, update its details and return the updated object.
+  const singleTournament = await prisma.tournament.findUnique({
+    where: {
+      id: id,
+    },
+  });
 
-  const { name, date, type, totalPlayers, location } = req.body;
-  tournaments[index] = {
-    ...tournaments[index],
-    name,
-    date,
-    type,
-    location,
-    totalPlayers,
-  };
-  res.status(StatusCodes.OK).json(tournaments[index]);
-}
-
-/**
- * Deletes a tournament based on its ID.
- *
- * @param {Object} req - The request object from the client, containing the query.
- * @param {Object} res - The response object to send back the deletion confirmation.
- */
-function deleteTournament(req, res) {
-  // Filter out the tournament with the given ID.
-  const newTournaments = tournaments.filter(
-    (tournament) => tournament.id !== req.query.id
-  );
-
-  // Check if the tournament array length is reduced after filtering.
-  if (newTournaments.length !== tournaments.length) {
-    tournaments = newTournaments;
-    // Confirm deletion with a 200 status.
-    res.status(StatusCodes.OK).json({ message: "Tournament deleted" });
+  if (singleTournament) {
+    return res.status(StatusCodes.OK).json(singleTournament);
   } else {
-    // If not found, return a 404 error.
-    res.status(StatusCodes.NOT_FOUND).json({ message: "Tournament not found" });
+    const error = new Error(`Tournament with ID ${id} not found`);
+    error.statusCode = StatusCodes.NOT_FOUND;
+    throw error;
   }
-}
+});
+
+const createTournament = asyncHandler(async (req, res) => {
+  const { name, date, type, totalPlayers, location } = req.body;
+
+  const newTournament = await prisma.tournament.create({
+    data: {
+      name,
+      date: new Date(date), // Ensure the date is in a proper format
+      type,
+      totalPlayers,
+      location,
+    },
+  });
+
+  res.status(StatusCodes.CREATED).json(newTournament);
+});
+
+const updateTournament = asyncHandler(async (req, res) => {
+  // Locate tournament index by ID or return -1 if not found.
+  const { id } = req.query;
+  if (!id) {
+    const error = new Error("Tournament ID must be provided");
+    error.statusCode = StatusCodes.BAD_REQUEST;
+    throw error;
+  }
+
+  const updatedTournament = await prisma.tournament.update({
+    where: {
+      id: id,
+    },
+    data: req.body,
+  });
+
+  return res.status(StatusCodes.OK).json({
+    message: `the tournament was updated at ID ${id}`,
+    tournament: updatedTournament,
+  });
+});
+
+const deleteTournament = asyncHandler(async (req, res) => {
+  const { id } = req.query;
+  if (!id) {
+    const error = new Error("Tournament ID must be provided");
+    error.statusCode = StatusCodes.BAD_REQUEST;
+    throw error;
+  }
+
+  const deletedTournament = await prisma.tournament.delete({
+    where: { id },
+  });
+  return res.status(StatusCodes.OK).json({
+    message: `Tournament with ID: ${id} was deleted successfully.`,
+    tournament: deletedTournament,
+  });
+});
 
 /**
  * The main handler for routing HTTP requests to the appropriate function
