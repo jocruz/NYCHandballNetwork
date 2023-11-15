@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
-import { asyncHandler } from "../utils/asyncHandler";
-import prisma from '../../../prismaClient';
+import { asyncHandler } from "../../../utils/asyncHandler";
+import prisma from "../../../prismaClient";
 
 /**
  * Retrieves all players from the database.
@@ -49,15 +49,8 @@ const getSinglePlayer = asyncHandler(async (req, res) => {
  * @returns {Promise<Response>} A promise that resolves with the response object containing the created player data.
  */
 const createPlayer = asyncHandler(async (req, res) => {
-  const { name, email, categoryRank, overallRank } = req.body;
-
   const newPlayer = await prisma.player.create({
-    data: {
-      name: name,
-      email: email,
-      categoryRank: categoryRank,
-      overallRank: overallRank,
-    },
+    data: req.body,
   });
 
   return res.status(StatusCodes.CREATED).json(newPlayer);

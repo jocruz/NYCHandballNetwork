@@ -1,100 +1,101 @@
 import { StatusCodes } from "http-status-codes";
+import prisma from "../../../prismaClient";
+import { asyncHandler } from "../../../utils/asyncHandler";
 
-let matches = [];
+const getAllMatches = asyncHandler(async (req, res) => {
+  const allMatches = await prisma.match.findMany();
+  return res.status(StatusCodes.OK).json(allMatches);
+}, "Match");
 
-function getAllMatches(req, res) {
-  return res.status(StatusCodes.OK).json(matches);
-}
-
-function getSingleMatch(req, res) {
+const getSingleMatch = asyncHandler(async (req, res) => {
   const { id } = req.query;
-  const index = matches.findIndex((match) => match.id === id);
-  if (index !== -1) {
-    return res.status(StatusCodes.OK).json(matches[index]);
-  } else {
-    return res
-      .status(StatusCodes.NOT_FOUND)
-      .json({ message: "Match was not found" });
+  if (!id) {
+    const error = new Error("Tournament ID must be provided");
+    error.statusCode = StatusCodes.NOT_FOUND;
+    throw error;
   }
-}
+  const singleMatch = await prisma.match.findUnique({
+    where: {
+      id: id,
+    },
+  });
 
-function createMatches(req, res) {
-  const {
-    matchType,
-    gameType,
-    playersTeamA,
-    playersTeamB,
-    scoresTeamA,
-    scoresTeamB,
-    status,
-    timeouts,
-    wipes,
-    scheduledTime,
-    nextMatchId,
-  } = req.body;
+  return res.status(StatusCodes.OK).json(singleMatch);
+}, "Match");
 
-  const newMatch = {
-    id: Date.now().toString(),
-    matchType,
-    gameType,
-    playersTeamA,
-    playersTeamB,
-    scoresTeamA: Number(scoresTeamA),
-    scoresTeamB: Number(scoresTeamB),
-    status,
-    timeouts: timeouts || [],
-    wipes: wipes || [],
-    scheduledTime: new Date(scheduledTime).toISOString(),
-    nextMatchId,
-  };
+const createMatches = asyncHandler(async (req, res) => {
+  const { matchType, playersTeamA, playersTeamB } = req.body;
 
-  matches.push(newMatch);
-
-  return res.status(StatusCodes.CREATED).json(newMatch);
-}
-
-function updateMatch(req, res) {
-  const { id } = req.query;
-  const {
-    matchType,
-    gameType,
-    playersTeamA,
-    playersTeamB,
-    scoresTeamA,
-    scoresTeamB,
-    status,
-    scheduledTime,
-    nextMatchId,
-  } = req.body;
-
-  const updatedMatch = {
-    ...(matchType !== undefined && { matchType }),
-    ...(gameType !== undefined && { gameType: Number(gameType) }),
-    ...(playersTeamA !== undefined && { playersTeamA }),
-    ...(playersTeamB !== undefined && { playersTeamB }),
-    ...(scoresTeamA !== undefined && { scoresTeamA: Number(scoresTeamA) }),
-    ...(scoresTeamB !== undefined && { scoresTeamB: Number(scoresTeamB) }),
-    ...(status !== undefined && { status }),
-    ...(scheduledTime !== undefined && {
-      scheduledTime: new Date(scheduledTime).toISOString(),
-    }), // Assuming you want to store the date in ISO format
-    ...(nextMatchId !== undefined && { nextMatchId }),
-  };
-
-  const index = matches.findIndex((match) => match.id === id);
-
-  if (index === -1) {
+  // Validate the number of players based on matchType
+  if (
+    matchType === "Singles" &&
+    (playersTeamA.length > 1 || playersTeamB.length > 1)
+  ) {
     return res
-      .status(StatusCodes.NOT_FOUND)
-      .json({ message: "Match not found" });
+      .status(400)
+      .send("Singles match must have exactly one player per team.");
   }
 
-  matches[index] = { ...matches[index], ...updatedMatch };
+  if (
+    matchType === "Doubles" &&
+    (playersTeamA.length !== 2 || playersTeamB.length !== 2)
+  ) {
+    return res
+      .status(400)
+      .send("Doubles match must have exactly two players per team.");
+  }
 
-  return res.status(StatusCodes.OK).json(matches[index]);
-}
+  // Create the match
+  try {
+    const createdMatch = await prisma.match.create({
+      data: {
+        ...req.body,
+        playersTeamA: {
+          connect: playersTeamA.map((playerId) => ({ id: playerId })),
+        },
+        playersTeamB: {
+          connect: playersTeamB.map((playerId) => ({ id: playerId })),
+        },
+      },
+    });
 
-function deleteMatch(req, res) {
+    res.status(201).json(createdMatch);
+  } catch (error) {
+    res.status(500).send("Error creating match" + error.message);
+  }
+}, "Match");
+
+const updateMatch = asyncHandler(async (req, res) => {
+  const { id } = req.query;
+  const updateData = req.body;
+
+  if (!id) {
+    const error = new Error("Match ID must be provided");
+    error.statusCode = StatusCodes.BAD_REQUEST;
+    throw error;
+  }
+
+  // Check if the match exists
+  const matchExists = await prisma.match.findUnique({
+    where: { id: id },
+  });
+
+  if (!matchExists) {
+    const error = new Error("Match not found");
+    error.statusCode = StatusCodes.NOT_FOUND;
+    throw error;
+  }
+
+  // Update the match
+  const updatedMatch = await prisma.match.update({
+    where: { id: id },
+    data: updateData,
+  });
+
+  return res.status(StatusCodes.OK).json(updatedMatch);
+}, "Match");
+
+const deleteMatch = asyncHandler(async (req, res) => {
   const { id } = req.query;
 
   if (!id) {
@@ -103,21 +104,19 @@ function deleteMatch(req, res) {
       .json({ message: "ID was not provided" });
   }
 
-  const matchExists = matches.some((match) => match.id === id);
-  if (!matchExists) {
-    return res
-      .status(StatusCodes.NOT_FOUND)
-      .json({ message: "Match not found" });
-  }
-
-  const remainingMatches = matches.filter((match) => match.id !== id);
-  matches = remainingMatches; // Update the matches array
-
   return res
     .status(StatusCodes.OK)
-    .json({ message: `Match with ID ${id} was deleted` });
-}
+    .json({ message: "The following match was deleted:" } + deleteMatch);
+}, "Match");
 
+const deleteAllMatches = async (req, res) => {
+  const deleteMany = await prisma.match.deleteMany({});
+
+  console.log(`Deleted ${deleteMany.count} matches.`);
+  return res
+    .status(StatusCodes.OK)
+    .json({ message: `Deleted ${deleteMany.count} matches.` });
+};
 /**
  * The main handler for routing HTTP requests to the appropriate function
  * based on the HTTP method specified in the request.
@@ -125,7 +124,7 @@ function deleteMatch(req, res) {
  * @param {Object} req - The HTTP request object from the client.
  * @param {Object} res - The HTTP response object for sending replies back to the client.
  */
-export default function handler(req, res) {
+const handler = async (req, res) => {
   // Use a switch statement to route to the correct function based on the HTTP method
   const { id } = req.query;
 
@@ -133,25 +132,27 @@ export default function handler(req, res) {
     case "GET":
       // Handle GET requests with the getMatches function
       if (id) {
-        getSingleMatch(req, res);
+        await getSingleMatch(req, res);
       } else {
-        getAllMatches(req, res);
+        await getAllMatches(req, res);
       }
       break;
     case "POST":
       // Handle POST requests with the createMatches function
-      createMatches(req, res);
+      await createMatches(req, res);
       break;
     case "PUT":
       // Handle PUT requests with the updateMatches function
       if (id) {
-        updateMatch(req, res);
+        await updateMatch(req, res);
       }
       break;
     case "DELETE":
       // Handle DELETE requests with the deleteMatches function
       if (id) {
-        deleteMatch(req, res);
+        await deleteMatch(req, res);
+      } else {
+        await deleteAllMatches(req, res);
       }
       break;
     default:
@@ -162,4 +163,6 @@ export default function handler(req, res) {
         .status(StatusCodes.METHOD_NOT_ALLOWED)
         .end(`Method ${req.method} Not Allowed`);
   }
-}
+};
+
+export default handler;

@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import prisma from '../../../prismaClient'
-import { asyncHandler } from "../utils/asyncHandler";
+import { asyncHandler } from "../../../utils/asyncHandler";
 
 /**
  * Retrieves all tournaments.
