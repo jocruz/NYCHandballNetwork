@@ -13,7 +13,7 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 
-const PlayerCard = ({ name, categoryRank, overallRank }) => {
+const TournamentCard = ({ name, type, location,date }) => {
   return (
     <Flex direction="row" wrap="wrap" justify="center" align="center">
       <Card align="center" size="md">
@@ -28,13 +28,16 @@ const PlayerCard = ({ name, categoryRank, overallRank }) => {
           alt={name}
         />
         <CardBody>
-          <Text>
-            {categoryRank} {overallRank}
+        <Text fontSize='5xl' color='tomato'>
+            {date} 
+          </Text>
+          <Text fontSize='5xl' color='tomato'>
+            {type} 
           </Text>
         </CardBody>
         <CardFooter>
           <Button colorScheme="teal" variant="solid">
-            Bio
+            {location}
           </Button>
         </CardFooter>
       </Card>
@@ -42,4 +45,4 @@ const PlayerCard = ({ name, categoryRank, overallRank }) => {
   );
 };
 
-export default PlayerCard;
+export default TournamentCard;

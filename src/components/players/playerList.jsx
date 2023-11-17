@@ -1,19 +1,21 @@
 // components/players/PlayerList.jsx
 "use client";
-import React from "react";
 import PlayerCard from "./PlayerCard";
+import { SimpleGrid, Spacer } from "@chakra-ui/react";
 
 const PlayerList = ({ players, loading }) => {
-    console.log("hi");
   if (loading) {
     return <div>Loading players...</div>;
   }
   return (
     <div>
+    <SimpleGrid columns={3} spacing={4}>
       {players.map((player) => (
         <PlayerCard key={player.id} {...player} />
       ))}
-    </div>
+    </SimpleGrid>
+    <Spacer/>
+</div>
   );
 };
 

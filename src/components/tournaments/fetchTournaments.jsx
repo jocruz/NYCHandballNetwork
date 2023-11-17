@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 const Tournaments = () => {
@@ -12,26 +12,16 @@ const Tournaments = () => {
       try {
         const allTournaments = await axios.get("/api/tournaments");
         setTournaments(allTournaments.data);
-        setLoading(false);
       } catch (error) {
         setError(error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchTournaments();
   }, []);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
-  return (
-    <div>
-      {tournaments.map((tournament) => (
-        <div key={tournament.id}>
-          <h3>{tournament.name}</h3>
-        </div>
-      ))}
-    </div>
-  );
+  return { tournaments, isLoading, error };
 };
 
 export default Tournaments;
