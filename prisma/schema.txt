@@ -1,0 +1,88 @@
+Schema Overview for Handball Tournament System
+
+1. User Model
+
+    Description: Represents users of the system.
+    Fields:
+        id: Unique identifier.
+        email: Unique email address.
+        password: Hashed password.
+        role: Role (PLAYER or TOURNAMENT_DIRECTOR).
+        player: Link to Player (optional).
+        tournaments: List of tournaments.
+    Relationships:
+        Player: Optional one-to-one.
+        Tournament: One-to-many.
+
+2. Player Model
+
+    Description: Represents individual handball players.
+    Fields:
+        id: Unique identifier.
+        name: Player's name.
+        email: Optional unique email.
+        categoryRank: Rank in category.
+        overallRank: Overall rank.
+        user: Link to User (optional).
+        userId: User identifier.
+        tournaments: Participating tournaments.
+        matchesAsTeamA: Matches as Team A.
+        matchesAsTeamB: Matches as Team B.
+        timeouts: Timeouts taken.
+        wipes: Wipes performed.
+    Relationships:
+        User: Optional one-to-one.
+        Tournament: Many-to-many.
+        Match: One-to-many (Team A/B).
+        Timeout/Wipe: One-to-many.
+
+3. Tournament Model
+
+    Description: Represents handball tournaments.
+    Fields:
+        id: Unique identifier.
+        name: Unique name.
+        date: Tournament date.
+        type: Tournament type.
+        createdBy: Creator (User link).
+        createdById: Creator's identifier.
+        totalPlayers: Total players (optional).
+        matches: Tournament matches.
+        players: Participating players.
+        location: Location.
+    Relationships:
+        User: Optional one-to-one.
+        Player: Many-to-many.
+        Match: One-to-many.
+
+4. Match Model
+
+    Description: Represents individual matches.
+    Fields/Relationships:
+        Match type, game type, teams, scores, status, scheduled time.
+        Links to Tournament, Player, Timeout, Wipe.
+
+5. Timeout Model
+
+    Description: Represents timeouts in matches.
+    Fields/Relationships:
+        Timeout type, duration, timestamp.
+        Links to Match and Player.
+
+6. Wipe Model
+
+    Description: Represents wipes in matches.
+    Fields/Relationships:
+        Wipe timestamp.
+        Links to Match and Player.
+
+Relationships Summary
+
+    User to Player: Optional one-to-one.
+    User to Tournament: One-to-many.
+    Player to Tournament: Many-to-many.
+    Player to Match: One-to-many (Team A/B).
+    Tournament to Match: One-to-many.
+    Match to Timeout/Wipe: One-to-many.
+    Player to Timeout/Wipe: One-to-many.
+
