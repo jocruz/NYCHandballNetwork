@@ -1,11 +1,16 @@
-'use client';
-import React from "react";
+"use client";
 import { Providers } from "./providers";
-const layout = () => {
+
+const RootLayout = ({ children }) => {
   return (
-    <Providers>
-    </Providers>
+    <html lang="en">
+      <body>
+        <Providers>
+          {children}
+          </Providers>
+      </body>
+    </html>
   );
 };
 
-export default layout;
+export default RootLayout;

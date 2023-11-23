@@ -1,5 +1,4 @@
 // pages/api/utils/asyncHandler.js
-
 import { StatusCodes } from "http-status-codes";
 
 export const asyncHandler = (fn,resourceName ) => async (req, res, next) => {
