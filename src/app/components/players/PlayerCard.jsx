@@ -1,4 +1,4 @@
-"use client";
+
 import {
   Heading,
   Card,
@@ -10,7 +10,6 @@ import {
   CardBody,
   Image,
   Divider,
-  Spacer,
 } from "@chakra-ui/react";
 
 const PlayerCard = ({ name, categoryRank, overallRank }) => {

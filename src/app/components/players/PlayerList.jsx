@@ -1,5 +1,5 @@
 // components/players/PlayerList.jsx
-"use client";
+
 import PlayerCard from "./PlayerCard";
 import { SimpleGrid, Spacer } from "@chakra-ui/react";
 
