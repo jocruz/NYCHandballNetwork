@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -8,7 +7,7 @@ const fetchPlayers = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchPlayers = async () => {
+    const getPlayers = async () => {
       try {
         const response = await axios.get("/api/players");
         setPlayers(response.data);
@@ -18,9 +17,8 @@ const fetchPlayers = () => {
         setIsLoading(false);
       }
     };
-    fetchPlayers();
+    getPlayers();
   }, []);
-
 
   return { players, isLoading, error };
 };
