@@ -9,6 +9,9 @@
 //     - Flexible and Extensible: You can add or modify configurations as your project grows.
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
-
-module.exports = nextConfig
+const nextConfig = {
+    reactStrictMode: true, // Enable React Strict Mode
+    // Add more configurations as needed
+  }
+  
+  module.exports = nextConfig
