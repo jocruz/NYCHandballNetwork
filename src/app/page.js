@@ -7,25 +7,23 @@ import {
   SignInButton,
   UserButton,
 } from "@clerk/nextjs";
+import Hero from "./components/hero/hero";
+import Dashboard from "./components/dashboard/Dashboard";
 
 const HomePage = async () => {
-  const user = await currentUser();
+  // const user = await currentUser();
 
   return (
     <>
       <Navbar />
-
-      <h1>My App</h1>
-      <SignedIn>
-        {/* Mount the UserButton component */}
-        <UserButton />
-      </SignedIn>
-      <SignedOut>
-        {/* Signed out users get sign in button */}
-        <SignInButton />
-      </SignedOut>
+      <Hero/>
+      <Dashboard/>
     </>
   );
 };
 
 export default HomePage;
+
+
+
+

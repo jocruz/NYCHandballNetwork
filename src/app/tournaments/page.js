@@ -1,6 +1,5 @@
 // pages/players.js
 "use client";
-import React from "react";
 import FetchTournaments from "../components/tournaments/fetchTournaments";
 import TournamentList from "../components/tournaments/TournamentList";
 
