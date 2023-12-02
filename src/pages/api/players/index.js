@@ -77,8 +77,8 @@ const updatePlayer = asyncHandler(async (req, res) => {
   const updatedPlayer = await prisma.player.update({
     where: {
       id: id,
-      data: req.body,
     },
+    data: req.body,
   });
 
   return res.status(StatusCodes.OK).json(updatedPlayer);
