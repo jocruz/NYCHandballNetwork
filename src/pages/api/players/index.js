@@ -1,5 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import { asyncHandler } from "@/pages/utils/asyncHandler";
+import  { NextApiRequest, NextApiResponse } from 'next'
 import prisma from "../../../db/prismaClient";
 
 /**
@@ -25,7 +26,7 @@ const getAllPlayers = asyncHandler(async (req, res) => {
  * @throws {Error} If the player ID is not provided or the player is not found.
  */
 const getSinglePlayer = asyncHandler(async (req, res) => {
-  const { id } = req.query;
+  const { id } = req.query; //req.query - An object containing the query string Defaults to {}
   if (!id) {
     const error = new Error("Player ID was not provided");
     error.statusCode = StatusCodes.NOT_FOUND;
