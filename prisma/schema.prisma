@@ -11,9 +11,11 @@ datasource db {
 model Player {
   id             String       @id @default(uuid()) @db.Uuid
   name           String
-  email          String?      @unique // Nullable since email might be optional
-  categoryRank   String
-  overallRank    Int
+  email          String      @unique // Nullable since email might be optional
+  homePark       String?
+  currentPark    String?
+  categoryRank   String?
+  overallRank    Int?
   tournaments    Tournament[] @relation("PlayerTournaments")
   matchesAsTeamA Match[]      @relation("PlayersTeamA")
   matchesAsTeamB Match[]      @relation("PlayersTeamB")

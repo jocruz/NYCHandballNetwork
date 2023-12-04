@@ -106,14 +106,13 @@ export default function Navbar() {
               <PopoverContent>
                 <PopoverArrow />
                 <PopoverCloseButton />
-                <Link href="/sign-in/player?role=player">
+                <Link href="/sign-in/player?role=player" passHref>
                   <Button
                     display={{ base: "none", md: "inline-flex" }}
                     fontSize={"sm"}
                     fontWeight={600}
                     color={"white"}
                     bg={"pink.400"}
-                    href={"#"}
                     _hover={{
                       bg: "pink.300",
                     }}
@@ -121,15 +120,13 @@ export default function Navbar() {
                     Player Sign In
                   </Button>
                 </Link>
-                <Link href="/sign-in/player?role=director">
+                <Link href="/sign-in/player?role=director" passHref>
                   <Button
-                    as={"a"}
                     display={{ base: "none", md: "inline-flex" }}
                     fontSize={"sm"}
                     fontWeight={600}
                     color={"white"}
                     bg={"pink.400"}
-                    href={"#"}
                     _hover={{
                       bg: "pink.300",
                     }}
@@ -161,14 +158,13 @@ export default function Navbar() {
               <PopoverContent>
                 <PopoverArrow />
                 <PopoverCloseButton />
-                <Link href="/sign-up/player?role=player">
+                <Link href="/sign-up/player?role=player" passHref>
                   <Button
                     display={{ base: "none", md: "inline-flex" }}
                     fontSize={"sm"}
                     fontWeight={600}
                     color={"white"}
                     bg={"pink.400"}
-                    href={"#"}
                     _hover={{
                       bg: "pink.300",
                     }}
@@ -176,15 +172,13 @@ export default function Navbar() {
                     Player Sign Up
                   </Button>
                 </Link>
-                <Link href="/sign-up/player?role=director">
+                <Link href="/sign-up/player?role=director" passHref>
                   <Button
-                    as={"a"}
                     display={{ base: "none", md: "inline-flex" }}
                     fontSize={"sm"}
                     fontWeight={600}
                     color={"white"}
                     bg={"pink.400"}
-                    href={"#"}
                     _hover={{
                       bg: "pink.300",
                     }}

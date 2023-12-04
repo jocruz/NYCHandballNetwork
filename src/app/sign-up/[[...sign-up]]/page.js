@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useSignUp } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 /**
  * SignUpForm is a React component that provides a user interface for signing up a new user.
@@ -12,6 +13,10 @@ export default function SignUpForm() {
   const { isLoaded, signUp, setActive } = useSignUp();
   // State for storing and updating user email.
   const [emailAddress, setEmailAddress] = useState("");
+  // State for storing and updating user name:
+  const [name, setName] = useState("");
+    // State for storing and updating user name:
+    const [categoryRank, setCategoryRank] = useState("");
   // State for storing and updating user password.
   const [password, setPassword] = useState("");
   // State for tracking if the email verification is pending.
@@ -79,7 +84,14 @@ export default function SignUpForm() {
       // If the sign-up is complete, set the active session and redirect to home page.
       if (completeSignUp.status === "complete") {
         await setActive({ session: completeSignUp.createdSessionId });
-        router.push("/");
+        try {
+          const playerData = { email:emailAddress,name,categoryRank};
+          await axios.post('/api/players', playerData);
+        } catch (error) {
+          console.error('Error creating/checking player:', error);
+        }
+        router.push('/')
+      
       }
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
@@ -98,6 +110,24 @@ export default function SignUpForm() {
               id="email"
               name="email"
               type="email"
+            />
+          </div>
+          <div>
+            <label htmlFor="firstname">First Name</label>
+            <input
+              onChange={(e) => setName(e.target.value)}
+              id="firstName"
+              name="firstName"
+              type="firstName"
+            />
+          </div>
+          <div>
+            <label htmlFor="categoryRank">What Rank Are You?</label>
+            <input
+              onChange={(e) => setCategoryRank(e.target.value)}
+              id="categoryRank"
+              name="categoryRank"
+              type="categoryRank"
             />
           </div>
           <div>

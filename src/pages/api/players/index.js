@@ -1,6 +1,5 @@
 import { StatusCodes } from "http-status-codes";
 import { asyncHandler } from "@/pages/utils/asyncHandler";
-import  { NextApiRequest, NextApiResponse } from 'next'
 import prisma from "../../../db/prismaClient";
 
 /**
