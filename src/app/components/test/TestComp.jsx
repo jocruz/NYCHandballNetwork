@@ -1,10 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Input, Button, Stack } from "@chakra-ui/react";
+import { Input, Button, Stack, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useUser } from "@clerk/nextjs";
 
 const TestComp = () => {
+  const toast = useToast()
   const { user } = useUser();
   console.log(user.emailAddresses[0].emailAddress); // get current email address of logged in user
   const currentUserEmail = user.emailAddresses[0].emailAddress;
@@ -75,6 +76,15 @@ const TestComp = () => {
             spinnerPlacement="start"
             loadingText="Making Changes"
             type="submit"
+            onClick={() =>
+              toast({
+                title: 'Information updated.',
+                description: "We've updated your information for you.",
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+              })
+            }
           >
             Submit Changes
           </Button>
