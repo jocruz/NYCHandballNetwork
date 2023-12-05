@@ -9,7 +9,7 @@ import { authMiddleware } from "@clerk/nextjs";
 //   ignoredRoutes: ["/((?!api|trpc))(_next.*|.+\.[\w]+$)", "/api/players"],
 // });
 
-export default authMiddleware({ignoredRoutes: ["/((?!api|trpc))(_next.*|.+\.[\w]+$)", "/api/players"]});
+export default authMiddleware({ignoredRoutes: ["/((?!api|trpc))(_next.*|.+\.[\w]+$)", "/api/players"], publicRoutes: ["/"]});
 
 export const config = {
   matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],

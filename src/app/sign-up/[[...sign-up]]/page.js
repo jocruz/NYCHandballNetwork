@@ -90,7 +90,7 @@ export default function SignUpForm() {
         } catch (error) {
           console.error('Error creating/checking player:', error);
         }
-        router.push('/')
+        router.push('/user-profile')
       
       }
     } catch (err) {

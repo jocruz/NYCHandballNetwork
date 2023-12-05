@@ -40,6 +40,22 @@ const getSinglePlayer = asyncHandler(async (req, res) => {
   return res.status(StatusCodes.OK).json({ player });
 }, "Player");
 
+const getPlayerByEmail = asyncHandler(async (req, res) => {
+  const { email } = req.query; // Get email from request body
+
+  if (!email) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "Email is required" });
+  }
+
+  const player = await prisma.player.findUnique({
+    where: { email: email },
+  });
+
+  return res.status(StatusCodes.OK).json({ player });
+}, "Player");
+
 /**
  * Creates a new player in the database.
  *
@@ -138,11 +154,13 @@ const deleteAllPlayers = async (req, res) => {
  */
 const handler = async (req, res) => {
   // Use a switch statement to route to the correct function based on the HTTP method
-  const { id } = req.query;
+  const { id, email } = req.query;
   switch (req.method) {
     case "GET":
       if (id) {
         await getSinglePlayer(req, res);
+      } else if (email) {
+        await getPlayerByEmail(req,res);
       } else {
         await getAllPlayers(req, res);
       }
