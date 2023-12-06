@@ -11,7 +11,7 @@ datasource db {
 model Player {
   id             String       @id @default(uuid()) @db.Uuid
   name           String
-  email          String      @unique // Nullable since email might be optional
+  email          String       @unique // Nullable since email might be optional
   homePark       String?
   currentPark    String?
   categoryRank   String?
@@ -24,16 +24,27 @@ model Player {
   @@map("players")
 }
 
+model TournamentDirector {
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String
+  email       String       @unique
+  phoneNumber String       @unique
+  rating      Int?
+  tournaments Tournament[] @relation("DirectorTournaments")
+}
+
 model Tournament {
-  id           String   @id @default(uuid()) @db.Uuid
-  name         String   @unique
-  date         DateTime
-  type         String
-  createdById  String?  @db.Uuid
-  totalPlayers Int?
-  matches      Match[]
-  players      Player[] @relation("PlayerTournaments")
-  location     String
+  id                   String             @id @default(uuid()) @db.Uuid
+  name                 String             @unique
+  date                 DateTime
+  type                 String
+  createdById          String?            @db.Uuid
+  totalPlayers         Int?
+  matches              Match[]
+  players              Player[]           @relation("PlayerTournaments")
+  location             String
+  directorId           String            @db.Uuid
+  director             TournamentDirector @relation(fields: [directorId], references: [id], name: "DirectorTournaments")
 
   @@map("tournaments")
 }

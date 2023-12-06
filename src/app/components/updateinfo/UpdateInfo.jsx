@@ -9,8 +9,8 @@ const UpdateInfo = () => {
   const { user } = useUser();
   console.log(user.emailAddresses[0].emailAddress); // get current email address of logged in user
   const currentUserEmail = user.emailAddresses[0].emailAddress;
-  const [homePark, sethomePark] = useState("");
-  const [currentPark, setcurrentPark] = useState("");
+  const [homePark, setHomePark] = useState("");
+  const [currentPark, setCurrentPark] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [playerId, setPlayerId] = useState("");
 
@@ -42,6 +42,15 @@ const UpdateInfo = () => {
       }
       await axios.put(`/api/players?id=${playerId}`, courtData);
       console.log("Court data updated successfully");
+      setCurrentPark("");
+      setHomePark("");
+      toast({
+        title: "Information updated.",
+        description: "We've updated your information for you.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
     } catch (error) {
       console.error("Error updating court data:", error);
     } finally {
@@ -59,7 +68,8 @@ const UpdateInfo = () => {
             <Input
               placeholder="Where did you start playing handball?"
               size="sm"
-              onChange={(e) => sethomePark(e.target.value)}
+              value = {homePark}
+              onChange={(e) => setHomePark(e.target.value)}
             />
           </div>
           <div>
@@ -67,7 +77,8 @@ const UpdateInfo = () => {
             <Input
               placeholder="Where do you currently play the most?"
               size="sm"
-              onChange={(e) => setcurrentPark(e.target.value)}
+              value = {currentPark}
+              onChange={(e) => setCurrentPark(e.target.value)}
             />
           </div>
           <Button
@@ -76,15 +87,6 @@ const UpdateInfo = () => {
             spinnerPlacement="start"
             loadingText="Making Changes"
             type="submit"
-            onClick={() =>
-              toast({
-                title: "Information updated.",
-                description: "We've updated your information for you.",
-                status: "success",
-                duration: 9000,
-                isClosable: true,
-              })
-            }
           >
             Submit Changes
           </Button>

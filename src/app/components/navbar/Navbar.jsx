@@ -19,13 +19,14 @@ import {
 } from "@chakra-ui/react";
 
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-
 import DesktopNav from "./DesktopNav";
 import MobileNav from "./MobileNav";
 import Link from "next/link";
+import { useUser, UserButton, SignedIn, SignOutButton } from "@clerk/nextjs";
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
+  const { isSignedIn, signOut } = useUser();
 
   const handlePlayerSignUp = async () => {
     // Use Clerk to initiate the sign-up process
@@ -78,118 +79,129 @@ export default function Navbar() {
             <DesktopNav />
           </Flex>
         </Flex>
-
-        <Stack
-          flex={{ base: 1, md: 0 }}
-          justify={"flex-end"}
-          direction={"row"}
-          spacing={6}
-        >
-          <Popover>
-            <PopoverTrigger>
-              <Button
-                as={"a"}
-                display={{ base: "none", md: "inline-flex" }}
-                fontSize={"sm"}
-                fontWeight={600}
-                color={"white"}
-                bg={"gray.500"}
-                href={"#"}
-                _hover={{
-                  bg: "pink.300",
-                }}
-              >
-                Sign in
-              </Button>
-            </PopoverTrigger>
-            <Portal>
-              <PopoverContent>
-                <PopoverArrow />
-                <PopoverCloseButton />
-                <Link href="/sign-in/player?role=player" passHref>
-                  <Button
-                    display={{ base: "none", md: "inline-flex" }}
-                    fontSize={"sm"}
-                    fontWeight={600}
-                    color={"white"}
-                    bg={"pink.400"}
-                    _hover={{
-                      bg: "pink.300",
-                    }}
-                  >
-                    Player Sign In
-                  </Button>
-                </Link>
-                <Link href="/sign-in/player?role=director" passHref>
-                  <Button
-                    display={{ base: "none", md: "inline-flex" }}
-                    fontSize={"sm"}
-                    fontWeight={600}
-                    color={"white"}
-                    bg={"pink.400"}
-                    _hover={{
-                      bg: "pink.300",
-                    }}
-                  >
-                    Tournament Director Sign In
-                  </Button>
-                </Link>
-              </PopoverContent>
-            </Portal>
-          </Popover>
-          <Popover>
-            <PopoverTrigger>
-              <Button
-                as={"a"}
-                display={{ base: "none", md: "inline-flex" }}
-                fontSize={"sm"}
-                fontWeight={600}
-                color={"white"}
-                bg={"pink.400"}
-                href={"#"}
-                _hover={{
-                  bg: "pink.300",
-                }}
-              >
-                Sign Up
-              </Button>
-            </PopoverTrigger>
-            <Portal>
-              <PopoverContent>
-                <PopoverArrow />
-                <PopoverCloseButton />
-                <Link href="/sign-up/player?role=player" passHref>
-                  <Button
-                    display={{ base: "none", md: "inline-flex" }}
-                    fontSize={"sm"}
-                    fontWeight={600}
-                    color={"white"}
-                    bg={"pink.400"}
-                    _hover={{
-                      bg: "pink.300",
-                    }}
-                  >
-                    Player Sign Up
-                  </Button>
-                </Link>
-                <Link href="/sign-up/player?role=director" passHref>
-                  <Button
-                    display={{ base: "none", md: "inline-flex" }}
-                    fontSize={"sm"}
-                    fontWeight={600}
-                    color={"white"}
-                    bg={"pink.400"}
-                    _hover={{
-                      bg: "pink.300",
-                    }}
-                  >
-                    Tournament Director Sign Up
-                  </Button>
-                </Link>
-              </PopoverContent>
-            </Portal>
-          </Popover>
-        </Stack>
+        {!isSignedIn ? (
+          <Stack
+            flex={{ base: 1, md: 0 }}
+            justify={"flex-end"}
+            direction={"row"}
+            spacing={6}
+          >
+            <Popover>
+              <PopoverTrigger>
+                <Button
+                  as={"a"}
+                  display={{ base: "none", md: "inline-flex" }}
+                  fontSize={"sm"}
+                  fontWeight={600}
+                  color={"white"}
+                  bg={"gray.500"}
+                  href={"#"}
+                  _hover={{
+                    bg: "pink.300",
+                  }}
+                >
+                  Sign in
+                </Button>
+              </PopoverTrigger>
+              <Portal>
+                <PopoverContent>
+                  <PopoverArrow />
+                  <PopoverCloseButton />
+                  <Link href="/sign-in/player?role=player" passHref>
+                    <Button
+                      display={{ base: "none", md: "inline-flex" }}
+                      fontSize={"sm"}
+                      fontWeight={600}
+                      color={"white"}
+                      bg={"pink.400"}
+                      _hover={{
+                        bg: "pink.300",
+                      }}
+                    >
+                      Player Sign In
+                    </Button>
+                  </Link>
+                  <Link href="/sign-in/player?role=director" passHref>
+                    <Button
+                      display={{ base: "none", md: "inline-flex" }}
+                      fontSize={"sm"}
+                      fontWeight={600}
+                      color={"white"}
+                      bg={"pink.400"}
+                      _hover={{
+                        bg: "pink.300",
+                      }}
+                    >
+                      Tournament Director Sign In
+                    </Button>
+                  </Link>
+                </PopoverContent>
+              </Portal>
+            </Popover>
+            <Popover>
+              <PopoverTrigger>
+                <Button
+                  as={"a"}
+                  display={{ base: "none", md: "inline-flex" }}
+                  fontSize={"sm"}
+                  fontWeight={600}
+                  color={"white"}
+                  bg={"pink.400"}
+                  href={"#"}
+                  _hover={{
+                    bg: "pink.300",
+                  }}
+                >
+                  Sign Up
+                </Button>
+              </PopoverTrigger>
+              <Portal>
+                <PopoverContent>
+                  <PopoverArrow />
+                  <PopoverCloseButton />
+                  <Link href="/sign-up/player?role=player" passHref>
+                    <Button
+                      display={{ base: "none", md: "inline-flex" }}
+                      fontSize={"sm"}
+                      fontWeight={600}
+                      color={"white"}
+                      bg={"pink.400"}
+                      _hover={{
+                        bg: "pink.300",
+                      }}
+                    >
+                      Player Sign Up
+                    </Button>
+                  </Link>
+                  <Link href="/sign-up/player?role=director" passHref>
+                    <Button
+                      display={{ base: "none", md: "inline-flex" }}
+                      fontSize={"sm"}
+                      fontWeight={600}
+                      color={"white"}
+                      bg={"pink.400"}
+                      _hover={{
+                        bg: "pink.300",
+                      }}
+                    >
+                      Tournament Director Sign Up
+                    </Button>
+                  </Link>
+                </PopoverContent>
+              </Portal>
+            </Popover>
+          </Stack>
+        ) : (
+          <Stack
+            flex={{ base: 1, md: 0 }}
+            justify={"flex-end"}
+            direction={"row"}
+            spacing={6}
+          >
+            <UserButton />
+            <SignOutButton />
+          </Stack>
+        )}
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>

@@ -12,7 +12,7 @@ import {
   Divider,
 } from "@chakra-ui/react";
 
-const PlayerCard = ({ name, categoryRank, overallRank }) => {
+const PlayerCard = ({ name, categoryRank, overallRank,currentPark,homePark }) => {
   return (
     <Flex direction="row" wrap="wrap" justify="center" align="center">
       <Card align="center" size="md">
@@ -28,7 +28,13 @@ const PlayerCard = ({ name, categoryRank, overallRank }) => {
         />
         <CardBody>
           <Text>
-            {categoryRank} {overallRank}
+            Rank:{categoryRank}
+          </Text>
+          <Text>
+          HomePark:{homePark}
+          </Text>
+          <Text>
+          Currently Playing at: {currentPark}
           </Text>
         </CardBody>
         <CardFooter>

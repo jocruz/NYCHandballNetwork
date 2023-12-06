@@ -6,9 +6,7 @@ import UpdateInfo from '../../components/updateinfo/UpdateInfo'
  
 const UserProfilePage = () => (
   <UserProfile path="/user-profile" routing="path">
-    <UserProfile.Link label="Edit Info" url="/" labelIcon={<EditIcon/>} />
-
-    <UserProfile.Page label="Custom Page" labelIcon={<EditIcon/>} url="custom-page">
+    <UserProfile.Page label="Update Info" labelIcon={<EditIcon/>} url="custom-page">
         <UpdateInfo />
     </UserProfile.Page>
   </UserProfile>
