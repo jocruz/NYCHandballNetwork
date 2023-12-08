@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useSignUp } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 
 /**
@@ -15,8 +15,8 @@ export default function SignUpForm() {
   const [emailAddress, setEmailAddress] = useState("");
   // State for storing and updating user name:
   const [name, setName] = useState("");
-    // State for storing and updating user name:
-    const [categoryRank, setCategoryRank] = useState("");
+  // State for storing and updating user name:
+  const [categoryRank, setCategoryRank] = useState("");
   // State for storing and updating user password.
   const [password, setPassword] = useState("");
   // State for tracking if the email verification is pending.
@@ -25,7 +25,8 @@ export default function SignUpForm() {
   const [code, setCode] = useState("");
   // useRouter hook for programmatically navigating between routes.
   const router = useRouter();
-
+  const searchParams = useSearchParams();
+  const search = searchParams.get("role");
   /**
    * Handles the form submission for signing up a new user.
    * Prevents default form submission behavior.
@@ -69,32 +70,35 @@ export default function SignUpForm() {
       return;
     }
 
+    let completeSignUp;
     try {
       // Attempt to verify the email address with the provided code.
-      const completeSignUp = await signUp.attemptEmailAddressVerification({
+      completeSignUp = await signUp.attemptEmailAddressVerification({
         code,
       });
-
-      // Check the status of the sign-up process.
-      if (completeSignUp.status !== "complete") {
-        // Log the response for investigation if the status is not complete.
-        console.log(JSON.stringify(completeSignUp, null, 2));
-      }
-
-      // If the sign-up is complete, set the active session and redirect to home page.
-      if (completeSignUp.status === "complete") {
-        await setActive({ session: completeSignUp.createdSessionId });
-        try {
-          const playerData = { email:emailAddress,name,categoryRank};
-          await axios.post('/api/players', playerData);
-        } catch (error) {
-          console.error('Error creating/checking player:', error);
-        }
-        router.push('/user-profile')
-      
-      }
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
+    }
+
+    // Check the status of the sign-up process.
+    if (completeSignUp.status !== "complete") {
+      // Log the response for investigation if the status is not complete.
+      console.log(JSON.stringify(completeSignUp, null, 2));
+    }
+
+    // If the sign-up is complete, set the active session and redirect to home page.
+    if (completeSignUp.status === "complete") {
+      try {
+        await setActive({ session: completeSignUp.createdSessionId });
+        const playerData = { email: emailAddress, name, categoryRank };
+        const apiEndpoint =
+          search === "director" ? "/api/tournamentdirectors" : "/api/players";
+
+        axios.post(apiEndpoint, playerData);
+        router.push("/user-profile");
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -121,15 +125,18 @@ export default function SignUpForm() {
               type="firstName"
             />
           </div>
-          <div>
-            <label htmlFor="categoryRank">What Rank Are You?</label>
-            <input
-              onChange={(e) => setCategoryRank(e.target.value)}
-              id="categoryRank"
-              name="categoryRank"
-              type="categoryRank"
-            />
-          </div>
+          {search === "player" && (
+            <div>
+              <label htmlFor="categoryRank">What Rank Are You?</label>
+              <input
+                onChange={(e) => setCategoryRank(e.target.value)}
+                id="categoryRank"
+                name="categoryRank"
+                type="categoryRank"
+              />
+            </div>
+          )}
+
           <div>
             <label htmlFor="password">Password</label>
             <input
