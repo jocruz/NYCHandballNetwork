@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Input, Button, Stack, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useUser } from "@clerk/nextjs";
+import { useSearchParams } from "next/navigation";
 
 const UpdateInfo = () => {
   const toast = useToast();
@@ -11,39 +12,54 @@ const UpdateInfo = () => {
   const currentUserEmail = user.emailAddresses[0].emailAddress;
   const [homePark, setHomePark] = useState("");
   const [currentPark, setCurrentPark] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("")
   const [isLoading, setIsLoading] = useState(false);
-  const [playerId, setPlayerId] = useState("");
+  const [userId, setuserId] = useState("");
+  const searchParams = useSearchParams();
+  const search = searchParams.get('role')
+
+  const apiEndPoint = search === 'player' ? '/api/players' : '/api/tournamentdirectors'
+  console.log(apiEndPoint);
 
   useEffect(() => {
-    const fetchCurrentPlayer = async () => {
+    const fetchCurrentUser = async () => {
       try {
         const response = await axios.get(
-          `/api/players?email=${currentUserEmail}`
+          `${apiEndPoint}?email=${currentUserEmail}`
         );
         console.log(response.data.player.id);
-        setPlayerId(response.data.player.id);
+        setuserId(response.data.player.id);
       } catch (error) {
         console.error("Error fetching player data:", error);
       }
     };
-    fetchCurrentPlayer();
+    fetchCurrentUser();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const courtData = {};
-      if (homePark !== "") {
-        courtData.homePark = homePark;
+      const userUpdateData = {};
+      if (search === 'player'){
+        if (homePark !== "") {
+          userUpdateData.homePark = homePark;
+        }
+        if (currentPark !== "") {
+          userUpdateData.currentPark = currentPark;
+        }
       }
-      if (currentPark !== "") {
-        courtData.currentPark = currentPark;
+      else{
+        if (phoneNumber !== ""){
+          userUpdateData.phoneNumber = phoneNumber;
+        }
       }
-      await axios.put(`/api/players?id=${playerId}`, courtData);
+      
+      await axios.put( `${apiEndPoint}?id=${userId}`, userUpdateData);
       console.log("Court data updated successfully");
       setCurrentPark("");
       setHomePark("");
+      setPhoneNumber("");
       toast({
         title: "Information updated.",
         description: "We've updated your information for you.",

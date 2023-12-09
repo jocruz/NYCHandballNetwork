@@ -28,17 +28,6 @@ export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
   const { isSignedIn, signOut } = useUser();
 
-  const handlePlayerSignUp = async () => {
-    // Use Clerk to initiate the sign-up process
-    // Pass 'player' as metadata or a query parameter to your backend
-  };
-
-  // Function to handle tournament director sign up
-  const handleDirectorSignUp = async () => {
-    // Use Clerk to initiate the sign-up process
-    // Pass 'tournament_director' as metadata or a query parameter to your backend
-  };
-
   return (
     <Box>
       <Flex
@@ -107,7 +96,7 @@ export default function Navbar() {
                 <PopoverContent>
                   <PopoverArrow />
                   <PopoverCloseButton />
-                  <Link href="/sign-in/player?role=player" passHref>
+                  <Link href="/sign-in/user?role=player" passHref>
                     <Button
                       display={{ base: "none", md: "inline-flex" }}
                       fontSize={"sm"}
@@ -121,7 +110,7 @@ export default function Navbar() {
                       Player Sign In
                     </Button>
                   </Link>
-                  <Link href="/sign-in/player?role=director" passHref>
+                  <Link href="/sign-in/user?role=director" passHref>
                     <Button
                       display={{ base: "none", md: "inline-flex" }}
                       fontSize={"sm"}
@@ -159,7 +148,7 @@ export default function Navbar() {
                 <PopoverContent>
                   <PopoverArrow />
                   <PopoverCloseButton />
-                  <Link href="/sign-up/player?role=player" passHref>
+                  <Link href="/sign-up/user?role=player" passHref>
                     <Button
                       display={{ base: "none", md: "inline-flex" }}
                       fontSize={"sm"}
@@ -173,7 +162,7 @@ export default function Navbar() {
                       Player Sign Up
                     </Button>
                   </Link>
-                  <Link href="/sign-up/player?role=director" passHref>
+                  <Link href="/sign-up/user?role=director" passHref>
                     <Button
                       display={{ base: "none", md: "inline-flex" }}
                       fontSize={"sm"}

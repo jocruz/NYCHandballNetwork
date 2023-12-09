@@ -2,7 +2,7 @@
 "use client";
 import React from "react";
 import { Providers } from "@/app/providers";
-import TournamentCreationForm from "@/components/tournaments/TournamentCreationForm";
+import TournamentCreationForm from "@/app/components/tournaments/TournamentCreationForm";
 
 const TournamentPage = () => {
 

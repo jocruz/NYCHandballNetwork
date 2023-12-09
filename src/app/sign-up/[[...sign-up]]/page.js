@@ -23,7 +23,11 @@ export default function SignUpForm() {
   const [pendingVerification, setPendingVerification] = useState(false);
   // State for storing the email verification code.
   const [code, setCode] = useState("");
+
+  const [phoneNumber, setPhoneNumber] = useState("");
+
   // useRouter hook for programmatically navigating between routes.
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const search = searchParams.get("role");
@@ -94,9 +98,12 @@ export default function SignUpForm() {
         if (categoryRank) {
           userData.categoryRank = categoryRank;
         }
+        if(phoneNumber){
+          userData.phoneNumber = phoneNumber;
+        }
 
         const apiEndpoint =
-          search === "director" ? "/api/tournamentdirectors" : "/api/players";
+          search === "player" ? "/api/players" : "/api/tournamentdirectors";
         axios.post(apiEndpoint, userData); // find a way to make the post either userData or directorData; cant be just player data;
         router.push("/user-profile");
       } catch (err) {
@@ -140,7 +147,17 @@ export default function SignUpForm() {
               />
             </div>
           )}
-
+          {search === "director" && (
+            <div>
+              <label htmlFor="categoryRank">Phone Number</label>
+              <input
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                id="categoryRank"
+                name="categoryRank"
+                type="categoryRank"
+              />
+            </div>
+          )}
           <div>
             <label htmlFor="password">Password</label>
             <input

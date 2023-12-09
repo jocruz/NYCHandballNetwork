@@ -31,20 +31,22 @@ model TournamentDirector {
   phoneNumber String       @unique
   rating      Int?
   tournaments Tournament[] @relation("DirectorTournaments")
+
+  @@map("tournament_directors")
 }
 
 model Tournament {
-  id                   String             @id @default(uuid()) @db.Uuid
-  name                 String             @unique
-  date                 DateTime
-  type                 String
-  createdById          String?            @db.Uuid
-  totalPlayers         Int?
-  matches              Match[]
-  players              Player[]           @relation("PlayerTournaments")
-  location             String
-  directorId           String            @db.Uuid
-  director             TournamentDirector @relation(fields: [directorId], references: [id], name: "DirectorTournaments")
+  id           String             @id @default(uuid()) @db.Uuid
+  name         String             @unique
+  date         DateTime
+  type         String
+  createdById  String?            @db.Uuid
+  totalPlayers Int?
+  matches      Match[]
+  players      Player[]           @relation("PlayerTournaments")
+  location     String
+  directorId   String             @db.Uuid
+  director     TournamentDirector @relation(fields: [directorId], references: [id], name: "DirectorTournaments")
 
   @@map("tournaments")
 }
