@@ -90,14 +90,18 @@ export default function SignUpForm() {
     if (completeSignUp.status === "complete") {
       try {
         await setActive({ session: completeSignUp.createdSessionId });
-        const playerData = { email: emailAddress, name, categoryRank };
+        const userData = { email: emailAddress, name };
+        if (categoryRank) {
+          userData.categoryRank = categoryRank;
+        }
+
         const apiEndpoint =
           search === "director" ? "/api/tournamentdirectors" : "/api/players";
-
-        axios.post(apiEndpoint, playerData);
+        axios.post(apiEndpoint, userData); // find a way to make the post either userData or directorData; cant be just player data;
         router.push("/user-profile");
       } catch (err) {
-        console.log(err);
+        // This catch will now also handle errors from axios.post
+        console.error("Error during post request or redirect:", err);
       }
     }
   };
