@@ -154,7 +154,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
               _focus={{ boxShadow: "none" }}
             >
               <HStack>
-              <HiMiniTrophy />
+                <HiMiniTrophy />
                 <VStack
                   display={{ base: "none", md: "flex" }}
                   alignItems="flex-start"
@@ -189,9 +189,6 @@ const MobileNav = ({ onOpen, ...rest }) => {
 const SidebarWithHeader = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [activeComponent, setActiveComponent] = useState("Home");
-  const handleActiveComponentChange = (componentName) => {
-    setActiveComponent(componentName);
-  };
 
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
