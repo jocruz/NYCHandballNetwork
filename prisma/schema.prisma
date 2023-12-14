@@ -10,7 +10,6 @@ datasource db {
 
 model Player {
   id             String       @id @default(uuid()) @db.Uuid
-  clerkUserId    String?      @unique
   name           String
   email          String       @unique // Nullable since email might be optional
   homePark       String?
@@ -27,7 +26,6 @@ model Player {
 
 model TournamentDirector {
   id          String       @id @default(uuid()) @db.Uuid
-  clerkUserId String?      @unique
   name        String
   email       String       @unique
   phoneNumber String       @unique
