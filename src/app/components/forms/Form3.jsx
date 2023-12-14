@@ -1,77 +1,68 @@
 import {
-    FormControl,
-    FormLabel,
-    Input,
-    Textarea,
-    Heading,
-    SimpleGrid,
-    GridItem,
-    InputGroup,
-    InputLeftAddon,
-    FormHelperText,
-  } from '@chakra-ui/react';
+  FormControl,
+  FormLabel,
+  Input,
+  Textarea,
+  Heading,
+  SimpleGrid,
+  GridItem,
+  InputGroup,
+  InputLeftAddon,
+  FormHelperText,
+} from "@chakra-ui/react";
 
-const Form3 = () => {
-    return (
-      <>
-        <Heading w="100%" textAlign={'center'} fontWeight="normal">
-          Social Handles
-        </Heading>
-        <SimpleGrid columns={1} spacing={6}>
-          <FormControl as={GridItem} colSpan={[3, 2]}>
-            <FormLabel
-              fontSize="sm"
-              fontWeight="md"
-              color="gray.700"
+const Form3 = ({ setFbUrl }) => {
+  return (
+    <>
+      <Heading w="100%" textAlign={"center"} fontWeight="normal">
+        Facebook Event URL
+      </Heading>
+      <SimpleGrid columns={1} spacing={6}>
+        <FormControl as={GridItem} colSpan={[3, 2]}>
+          <FormLabel
+            fontSize="sm"
+            fontWeight="md"
+            color="gray.700"
+            _dark={{
+              color: "gray.50",
+            }}
+          >
+            Website
+          </FormLabel>
+          <InputGroup size="sm">
+            <InputLeftAddon
+              bg="gray.50"
               _dark={{
-                color: 'gray.50',
-              }}>
-              Website
-            </FormLabel>
-            <InputGroup size="sm">
-              <InputLeftAddon
-                bg="gray.50"
-                _dark={{
-                  bg: 'gray.800',
-                }}
-                color="gray.500"
-                rounded="md">
-                http://
-              </InputLeftAddon>
-              <Input
-                type="tel"
-                placeholder="www.example.com"
-                focusBorderColor="brand.400"
-                rounded="md"
-              />
-            </InputGroup>
-          </FormControl>
-  
-          <FormControl id="email" mt={1}>
-            <FormLabel
-              fontSize="sm"
-              fontWeight="md"
-              color="gray.700"
-              _dark={{
-                color: 'gray.50',
-              }}>
-              About
-            </FormLabel>
-            <Textarea
-              placeholder="you@example.com"
-              rows={3}
-              shadow="sm"
+                bg: "gray.800",
+              }}
+              color="gray.500"
+              rounded="md"
+            >
+              http://
+            </InputLeftAddon>
+            <Input
+              type="tel"
+              placeholder="www.example.com"
               focusBorderColor="brand.400"
-              fontSize={{
-                sm: 'sm',
+              rounded="md"
+              onChange={(e) => {
+                setFbUrl(e.target.value);
               }}
             />
-            <FormHelperText>
-              Brief description for your profile. URLs are hyperlinked.
-            </FormHelperText>
-          </FormControl>
-        </SimpleGrid>
-      </>
-    )
-  }
-export default Form3
+          </InputGroup>
+        </FormControl>
+
+        <FormControl id="email" mt={1}>
+          <FormHelperText>
+            Many handball tournaments are organized using Facebook events. If
+            you have created a Facebook event for your tournament, you can
+            include its URL here. This allows players to access all event
+            details directly from Facebook. However, providing a Facebook event
+            link is optional and up to your discretion.
+          </FormHelperText>
+        </FormControl>
+      </SimpleGrid>
+    </>
+  );
+};
+export default Form3;

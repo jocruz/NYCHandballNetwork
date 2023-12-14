@@ -8,7 +8,7 @@ const FetchTournaments = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchTournaments = async () => {
+    const getAllTournaments = async () => {
       try {
         const allTournaments = await axios.get("/api/tournaments");
         setTournaments(allTournaments.data);
@@ -18,7 +18,7 @@ const FetchTournaments = () => {
         setLoading(false);
       }
     };
-    fetchTournaments();
+    getAllTournaments();
   }, []);
 
   return { tournaments, isLoading, error };

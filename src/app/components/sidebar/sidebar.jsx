@@ -28,9 +28,9 @@ import {
   FiBell,
   FiChevronDown,
 } from "react-icons/fi";
-import MultistepForm from "../forms/MultistepForm";
 
 import { HiMiniTrophy } from "react-icons/hi2";
+import TournamentPage from "@/app/createTournament/page";
 const LinkItems = [
   { name: "Home", icon: FiHome },
   { name: "My Tournaments", icon: FiTrendingUp },
@@ -191,7 +191,8 @@ const SidebarWithHeader = () => {
   const [activeComponent, setActiveComponent] = useState("Home");
 
   return (
-    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+    //useColorModeValue is a chakra color hook that provide lightMode,darkMode value
+    <Box minH="100vh" bg={useColorModeValue("white", "gray.900")}>
       <SidebarContent
         onClose={onClose}
         onSetActive={setActiveComponent}
@@ -213,7 +214,7 @@ const SidebarWithHeader = () => {
       <Box ml={{ base: 0, md: 60 }} p="4">
         {/* Content goes here */}
         <div>
-          {activeComponent === "Create Tournament" && <MultistepForm />}
+          {activeComponent === "Create Tournament" && <TournamentPage />}
         </div>
       </Box>
     </Box>

@@ -94,11 +94,15 @@ export default function SignUpForm() {
     if (completeSignUp.status === "complete") {
       try {
         await setActive({ session: completeSignUp.createdSessionId });
-        const userData = { email: emailAddress, name };
+        console.log(completeSignUp);
+
+        const clerkUserId = completeSignUp.createdUserId;
+
+        const userData = { email: emailAddress, name, clerkUserId };
         if (categoryRank) {
           userData.categoryRank = categoryRank;
         }
-        if(phoneNumber){
+        if (phoneNumber) {
           userData.phoneNumber = phoneNumber;
         }
 

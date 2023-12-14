@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { asyncHandler } from "@/pages/utils/asyncHandler";
 import prisma from "../../../db/prismaClient";
-
+import { clerkClient } from "@clerk/nextjs";
 /**
  * Retrieves all players from the database.
  *
@@ -65,6 +65,15 @@ const getPlayerByEmail = asyncHandler(async (req, res) => {
  * @returns {Promise<Response>} A promise that resolves with the response object containing the created player data.
  */
 const createPlayer = asyncHandler(async (req, res) => {
+  const { clerkUserId, phoneNumber } = req.body;
+
+  await clerkClient.users.updateUserMetadata(clerkUserId, {
+    publicMetadata: {
+      id: clerkUserId,
+      phoneNumber: phoneNumber,
+    },
+  });
+
   const newPlayer = await prisma.player.create({
     data: req.body,
   });
@@ -160,7 +169,7 @@ const handler = async (req, res) => {
       if (id) {
         await getSinglePlayer(req, res);
       } else if (email) {
-        await getPlayerByEmail(req,res);
+        await getPlayerByEmail(req, res);
       } else {
         await getAllPlayers(req, res);
       }

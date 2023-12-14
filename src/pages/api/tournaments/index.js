@@ -56,7 +56,7 @@ const getSingleTournament = asyncHandler(async (req, res) => {
  * @returns {Promise<Response>} The response object with the created tournament data.
  */
 const createTournament = asyncHandler(async (req, res) => {
-  const { name, date, type, totalPlayers, location } = req.body;
+  const { name, date, type, totalPlayers, location, userDatabaseId } = req.body;
 
   const newTournament = await prisma.tournament.create({
     data: {
@@ -65,6 +65,11 @@ const createTournament = asyncHandler(async (req, res) => {
       type,
       totalPlayers,
       location,
+      director: {
+        connect: {
+          id: userDatabaseId, // Replace with the ID of the existing director
+        },
+      },
     },
   });
 

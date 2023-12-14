@@ -10,6 +10,7 @@ datasource db {
 
 model Player {
   id             String       @id @default(uuid()) @db.Uuid
+  clerkUserId    String?      @unique
   name           String
   email          String       @unique // Nullable since email might be optional
   homePark       String?
@@ -26,6 +27,7 @@ model Player {
 
 model TournamentDirector {
   id          String       @id @default(uuid()) @db.Uuid
+  clerkUserId String?      @unique
   name        String
   email       String       @unique
   phoneNumber String       @unique
@@ -42,6 +44,8 @@ model Tournament {
   type         String
   createdById  String?            @db.Uuid
   totalPlayers Int?
+  price        Int?
+  fbUrl        String?
   matches      Match[]
   players      Player[]           @relation("PlayerTournaments")
   location     String

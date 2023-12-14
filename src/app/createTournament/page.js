@@ -1,11 +1,12 @@
 // pages/players.js
 "use client";
 import React from "react";
+import MultistepForm from "../components/forms/MultistepForm";
 
 // import TournamentCreationForm from "@/app/components/tournaments/TournamentCreationForm";
 
 const TournamentPage = () => {
-  return <div>"This is where we create a tournament"</div>;
+  return <div><MultistepForm/></div>;
 };
 
 export default TournamentPage;

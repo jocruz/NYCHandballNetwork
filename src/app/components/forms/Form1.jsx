@@ -1,18 +1,7 @@
 import { useState } from "react";
-import {
-  FormControl,
-  FormLabel,
-  Input,
-  Heading,
-  Flex,
-  InputGroup,
-  Button,
-  InputRightElement,
-  NumberInput,
-  NumberInputField,
-} from "@chakra-ui/react";
+import { FormControl, FormLabel, Input, Heading, Flex } from "@chakra-ui/react";
 
-const Form1 = () => {
+const Form1 = ({ setName, setDate, setLocation }) => {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
 
@@ -26,33 +15,35 @@ const Form1 = () => {
           <FormLabel htmlFor="tournament-name" fontWeight={"normal"}>
             Name of Tournament
           </FormLabel>
-          <Input id="tournament-name" placeholder="Tournament Name" />
+          <Input
+            id="tournament-name"
+            placeholder="Tournament Name"
+            onChange={(e) => setName(e.target.value)}
+          />
         </FormControl>
 
         <FormControl>
           <FormLabel htmlFor="location" fontWeight={"normal"}>
             Location
           </FormLabel>
-          <Input id="location" placeholder="Enter Address or Location" />
+          <Input
+            id="location"
+            placeholder="Enter Address or Location"
+            onChange={(e) => setLocation(e.target.value)}
+          />
         </FormControl>
       </Flex>
-      <FormControl mt="2%">
-        <FormLabel htmlFor="number-of-players" fontWeight={"normal"}>
-          Number of Players
-        </FormLabel>
-        <NumberInput min={1}>
-          <NumberInputField id="number-of-players" />
-        </NumberInput>
-      </FormControl>
-
 
       <FormControl mt="2%">
         <FormLabel htmlFor="date-of-tournament" fontWeight={"normal"}>
           Date of Tournament
         </FormLabel>
-        <Input id="date-of-tournament" type="date" />
+        <Input
+          id="date-of-tournament"
+          type="date"
+          onChange={(e) => setDate(e.target.value)}
+        />
       </FormControl>
-
     </>
   );
 };

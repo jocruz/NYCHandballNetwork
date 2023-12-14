@@ -3,6 +3,7 @@
 import { StatusCodes } from "http-status-codes";
 import { asyncHandler } from "@/pages/utils/asyncHandler";
 import prisma from "../../../db/prismaClient";
+import { clerkClient } from "@clerk/nextjs";
 
 // Retrieve all tournament directors
 const getAllDirectors = asyncHandler(async (req, res) => {
@@ -25,20 +26,54 @@ const getSingleDirector = asyncHandler(async (req, res) => {
   });
 
   if (!director) {
-    return res.status(StatusCodes.NOT_FOUND).json({ message: "Director not found" });
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ message: "Director not found" });
   }
 
   return res.status(StatusCodes.OK).json({ director });
 }, "TournamentDirector");
 
-// Create a new tournament director
+const getDirectorByEmail = asyncHandler(async (req, res) => {
+  const { email } = req.query; // Get email from request body
+
+  if (!email) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "Email is required" });
+  }
+
+  const director = await prisma.tournamentDirector.findUnique({
+    where: { email: email },
+  });
+
+  return res.status(StatusCodes.OK).json({ director });
+}, "TournamentDirector");
+
+// Create a new tournament director end point
 const createDirector = asyncHandler(async (req, res) => {
+  const { clerkUserId, phoneNumber } = req.body;
+
+  // Create the Tournament Director in the database
   const newDirector = await prisma.tournamentDirector.create({
     data: req.body,
   });
 
+  // Store the database-generated ID in the Clerk user's metadata
+  try {
+    await clerkClient.users.updateUserMetadata(clerkUserId, {
+      publicMetadata: {
+        databaseId: newDirector.id, // Using the database-generated ID
+        phoneNumber: phoneNumber
+      },
+    });
+  } catch (error) {
+    console.error("Error updating Clerk user metadata:", error);
+  }
+
   return res.status(StatusCodes.CREATED).json(newDirector);
 }, "TournamentDirector");
+
 
 // Update a tournament director's information
 const updateDirector = asyncHandler(async (req, res) => {
@@ -79,11 +114,13 @@ const deleteDirector = asyncHandler(async (req, res) => {
 
 // Main handler for routing HTTP requests
 const directorHandler = async (req, res) => {
-  const { id } = req.query;
+  const { id, email } = req.query;
   switch (req.method) {
     case "GET":
       if (id) {
         await getSingleDirector(req, res);
+      } else if (email) {
+        await getDirectorByEmail(req, res);
       } else {
         await getAllDirectors(req, res);
       }
