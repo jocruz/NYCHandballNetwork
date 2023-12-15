@@ -5,8 +5,8 @@ import MultistepForm from "../components/forms/MultistepForm";
 
 // import TournamentCreationForm from "@/app/components/tournaments/TournamentCreationForm";
 
-const TournamentPage = () => {
+const CreateTournamentPage = () => {
   return <div><MultistepForm/></div>;
 };
 
-export default TournamentPage;
+export default CreateTournamentPage;

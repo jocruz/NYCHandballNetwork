@@ -3,6 +3,7 @@ import {
   FormLabel,
   Input,
   Textarea,
+  Text,
   Heading,
   SimpleGrid,
   GridItem,
@@ -54,11 +55,14 @@ const Form3 = ({ setFbUrl }) => {
 
         <FormControl id="email" mt={1}>
           <FormHelperText>
-            Many handball tournaments are organized using Facebook events. If
+          <Text as='b' fontSize='lg'> Many handball tournaments are organized using Facebook events. If
             you have created a Facebook event for your tournament, you can
             include its URL here. This allows players to access all event
-            details directly from Facebook. However, providing a Facebook event
-            link is optional and up to your discretion.
+            details directly from Facebook.</Text>
+            <br/>
+            <br/>
+          <Text as='i'fontSize='lg'> However, providing a Facebook event
+            link is optional.</Text>
           </FormHelperText>
         </FormControl>
       </SimpleGrid>

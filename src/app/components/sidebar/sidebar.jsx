@@ -30,7 +30,9 @@ import {
 } from "react-icons/fi";
 
 import { HiMiniTrophy } from "react-icons/hi2";
-import TournamentPage from "@/app/createTournament/page";
+import CreateTournamentPage from "@/app/createTournament/page";
+import TournamentPage from "@/app/tournaments/page";
+import DirectorTournaments from "../tournaments/DirectorTournaments";
 const LinkItems = [
   { name: "Home", icon: FiHome },
   { name: "My Tournaments", icon: FiTrendingUp },
@@ -214,7 +216,8 @@ const SidebarWithHeader = () => {
       <Box ml={{ base: 0, md: 60 }} p="4">
         {/* Content goes here */}
         <div>
-          {activeComponent === "Create Tournament" && <TournamentPage />}
+          {activeComponent === "Create Tournament" && <CreateTournamentPage />}
+          {activeComponent === "My Tournaments" && <DirectorTournaments />}
         </div>
       </Box>
     </Box>

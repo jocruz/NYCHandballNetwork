@@ -48,8 +48,8 @@ const Form2 = ({ setTotalPlayer, setType, setPrice }) => {
         </FormLabel>
         <NumberInput
           defaultValue={21}
-          min={11}
-          max={25}
+          min={3}
+          max={128}
           onChange={(e) => setTotalPlayer(e.target.value)}
         >
           <NumberInputField id="number-of-players" />

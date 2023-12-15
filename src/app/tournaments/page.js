@@ -1,6 +1,6 @@
 // pages/players.js
 "use client";
-import FetchTournaments from "../components/tournaments/fetchTournaments";
+import FetchTournaments from "../components/tournaments/FetchTournaments";
 import TournamentList from "../components/tournaments/TournamentList";
 
 const TournamentPage = () => {
