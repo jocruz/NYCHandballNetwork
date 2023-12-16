@@ -31,15 +31,24 @@ import {
 
 import { HiMiniTrophy } from "react-icons/hi2";
 import CreateTournamentPage from "@/app/createTournament/page";
-import TournamentPage from "@/app/tournaments/page";
 import DirectorTournaments from "../tournaments/DirectorTournaments";
-const LinkItems = [
+const DirectorLinkItems = [
   { name: "Home", icon: FiHome },
   { name: "My Tournaments", icon: FiTrendingUp },
   { name: "Create Tournament", icon: FiCompass },
 ];
+const PlayerLinkItems = [
+  { name: "Home", icon: FiHome },
+  { name: "My Tournaments", icon: FiTrendingUp },
+  { name: "Active Tournaments", icon: FiCompass },
+];
 
-const SidebarContent = ({ onClose, onSetActive, ...rest }) => {
+const SidebarContent = ({ onClose, onSetActive, user, ...rest }) => {
+  const userLinks =
+    user.publicMetadata.role === "director"
+      ? DirectorLinkItems
+      : PlayerLinkItems;
+
   return (
     <Box
       transition="3s ease"
@@ -57,7 +66,7 @@ const SidebarContent = ({ onClose, onSetActive, ...rest }) => {
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
-      {LinkItems.map((link) => (
+      {userLinks.map((link) => (
         <NavItem
           key={link.name}
           icon={link.icon}
@@ -111,7 +120,7 @@ const NavItem = ({ icon, children, onClick, ...rest }) => {
   );
 };
 
-const MobileNav = ({ onOpen, ...rest }) => {
+const MobileNav = ({ onOpen, user, ...rest }) => {
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -163,9 +172,13 @@ const MobileNav = ({ onOpen, ...rest }) => {
                   spacing="1px"
                   ml="2"
                 >
-                  <Text fontSize="sm">Justina Clark</Text>
+                  <Text fontSize="sm">
+                    {user.emailAddresses[0].emailAddress}
+                  </Text>
                   <Text fontSize="xs" color="gray.600">
-                    Tournament Director
+                    {user.publicMetadata.role === "director" &&
+                      "Tournament Director"}
+                    {user.publicMetadata.role === "player" && "Active Player"}
                   </Text>
                 </VStack>
                 <Box display={{ base: "none", md: "flex" }}>
@@ -188,7 +201,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
   );
 };
 
-const SidebarWithHeader = () => {
+const SidebarWithHeader = ({ user }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [activeComponent, setActiveComponent] = useState("Home");
 
@@ -199,6 +212,7 @@ const SidebarWithHeader = () => {
         onClose={onClose}
         onSetActive={setActiveComponent}
         display={{ base: "none", md: "block" }}
+        user={user}
       />
       <Drawer
         isOpen={isOpen}
@@ -212,12 +226,14 @@ const SidebarWithHeader = () => {
           <SidebarContent onClose={onClose} onSetActive={setActiveComponent} />
         </DrawerContent>
       </Drawer>
-      <MobileNav onOpen={onOpen} />
+      <MobileNav onOpen={onOpen} user={user} />
       <Box ml={{ base: 0, md: 60 }} p="4">
         {/* Content goes here */}
         <div>
-          {activeComponent === "Create Tournament" && <CreateTournamentPage />}
-          {activeComponent === "My Tournaments" && <DirectorTournaments />}
+          {activeComponent === "Create Tournament" &&
+            user.publicMetadata.role === "director" && <CreateTournamentPage />}
+          {activeComponent === "My Tournaments" &&
+            user.publicMetadata.role === "director" && <DirectorTournaments />}
         </div>
       </Box>
     </Box>

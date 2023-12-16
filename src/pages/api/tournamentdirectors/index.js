@@ -64,7 +64,8 @@ const createDirector = asyncHandler(async (req, res) => {
     await clerkClient.users.updateUserMetadata(clerkUserId, {
       publicMetadata: {
         databaseId: newDirector.id, // Using the database-generated ID
-        phoneNumber: phoneNumber
+        phoneNumber: phoneNumber,
+        role:"player",
       },
     });
   } catch (error) {

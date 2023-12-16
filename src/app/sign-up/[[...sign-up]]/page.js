@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useSignUp } from "@clerk/nextjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
+import { useUser } from "@clerk/nextjs";
 
 /**
  * SignUpForm is a React component that provides a user interface for signing up a new user.
@@ -26,6 +27,8 @@ export default function SignUpForm() {
 
   const [phoneNumber, setPhoneNumber] = useState("");
 
+  const {user} = useUser();
+  
   // useRouter hook for programmatically navigating between routes.
 
   const router = useRouter();
@@ -108,7 +111,7 @@ export default function SignUpForm() {
 
         const apiEndpoint =
           search === "player" ? "/api/players" : "/api/tournamentdirectors";
-        axios.post(apiEndpoint, userData); // find a way to make the post either userData or directorData; cant be just player data;
+        axios.post(apiEndpoint, userData);
         router.push("/user-profile");
       } catch (err) {
         // This catch will now also handle errors from axios.post

@@ -71,6 +71,7 @@ const createPlayer = asyncHandler(async (req, res) => {
     publicMetadata: {
       id: clerkUserId,
       phoneNumber: phoneNumber,
+      role: "player",
     },
   });
 
