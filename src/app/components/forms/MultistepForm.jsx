@@ -34,7 +34,7 @@ const MultistepForm = () => {
   const [fbUrl, setFbUrl] = useState("");
   const { user } = useUser();
   // const currentUserEmail = user.emailAddresses[0].emailAddress;
-  const test = user // using the useUser hook to get the user object to then use the user object to get the publicMetadata
+  const test = user; // using the useUser hook to get the user object to then use the user object to get the publicMetadata
   const userDatabaseId = user.publicMetadata.databaseId;
   console.log(user.publicMetadata.databaseId);
   const tournamentData = {
@@ -68,21 +68,6 @@ const MultistepForm = () => {
       console.log("There was an error creating a tournament", err);
     }
   };
-
-  // useEffect(() => {
-  //   const fetchCurrentUser = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `/api/tournamentdirectors?email=${currentUserEmail}`
-  //       );
-  //       console.log(response.data.director.id);
-  //       setDirectorId(response.data.director.id);
-  //     } catch (error) {
-  //       console.error("Error fetching director data:", error);
-  //     }
-  //   };
-  //   fetchCurrentUser();
-  // }, []);
 
   return (
     <>

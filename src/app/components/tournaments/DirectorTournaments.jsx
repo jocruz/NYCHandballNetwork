@@ -1,7 +1,8 @@
 "use client";
 import TournamentCard from "./TournamentCard";
-import { SimpleGrid } from "@chakra-ui/react";
-import { Skeleton } from "@chakra-ui/react";
+import TournamentList from "./TournamentList";
+import { SimpleGrid, Skeleton } from "@chakra-ui/react";
+
 import { useUser } from "@clerk/nextjs";
 
 import FetchTournaments from "@/app/components/tournaments/FetchTournaments";

@@ -19,7 +19,9 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
+
 import { useState } from "react";
+
 import {
   FiHome,
   FiTrendingUp,
@@ -32,6 +34,8 @@ import {
 import { HiMiniTrophy } from "react-icons/hi2";
 import CreateTournamentPage from "@/app/createTournament/page";
 import DirectorTournaments from "../tournaments/DirectorTournaments";
+import PlayerTournaments from "@/app/components/tournaments/playerTournaments";
+
 const DirectorLinkItems = [
   { name: "Home", icon: FiHome },
   { name: "My Tournaments", icon: FiTrendingUp },
@@ -228,12 +232,15 @@ const SidebarWithHeader = ({ user }) => {
       </Drawer>
       <MobileNav onOpen={onOpen} user={user} />
       <Box ml={{ base: 0, md: 60 }} p="4">
-        {/* Content goes here */}
+        {/* Content goes here that goes inside of the clicked tab on the dashboard */}
         <div>
           {activeComponent === "Create Tournament" &&
             user.publicMetadata.role === "director" && <CreateTournamentPage />}
           {activeComponent === "My Tournaments" &&
             user.publicMetadata.role === "director" && <DirectorTournaments />}
+          {activeComponent === "Active Tournaments" &&
+            user.publicMetadata.role === "player" && <PlayerTournaments />}{" "}
+          //somehow pass tournament ID here...
         </div>
       </Box>
     </Box>
