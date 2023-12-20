@@ -47,6 +47,34 @@ const getSingleTournament = asyncHandler(async (req, res) => {
   }
 }, "Tournament");
 
+const getTournamentDetails = asyncHandler(async (req, res) => {
+  const { id } = req.query;
+
+  if (!id) {
+    return res.status(StatusCodes.BAD_REQUEST).json({ message: "Tournament ID is required" });
+  }
+
+  const tournamentDetails = await prisma.tournament.findUnique({
+    where: { id: id },
+    include: {
+      playerRegistrations: {
+        include: {
+          player: true, // Include details about the player
+        },
+      },
+    },
+  });
+
+  if (!tournamentDetails) {
+    return res.status(StatusCodes.NOT_FOUND).json({ message: "Tournament not found" });
+  }
+
+  console.log(tournamentDetails); // Debugging: log the retrieved data
+
+  return res.status(StatusCodes.OK).json(tournamentDetails);
+}, "TournamentDetails");
+
+
 /**
  * Creates a new tournament.
  *
@@ -162,13 +190,13 @@ const deleteAllTournaments = async (req, res) => {
  */
 const handler = async (req, res) => {
   // Use a switch statement to route to the correct function based on the HTTP method
-  const { id } = req.query;
+  const { id} = req.query;
 
   switch (req.method) {
     case "GET":
       // Handle GET requests with the getTournament function
       if (id) {
-        await getSingleTournament(req, res);
+        await getTournamentDetails(req, res);
       } else {
         await getAllTournaments(req, res);}
       break;

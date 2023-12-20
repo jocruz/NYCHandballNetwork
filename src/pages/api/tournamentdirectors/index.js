@@ -11,7 +11,7 @@ const getAllDirectors = asyncHandler(async (req, res) => {
   return res.status(StatusCodes.OK).json(allDirectors);
 }, "TournamentDirectors");
 
-// Retrieve a single tournament director by ID
+// GetSingleDirector
 const getSingleDirector = asyncHandler(async (req, res) => {
   const { id } = req.query;
   if (!id) {
@@ -34,6 +34,7 @@ const getSingleDirector = asyncHandler(async (req, res) => {
   return res.status(StatusCodes.OK).json({ director });
 }, "TournamentDirector");
 
+//GetDirectorByEmail
 const getDirectorByEmail = asyncHandler(async (req, res) => {
   const { email } = req.query; // Get email from request body
 
@@ -52,12 +53,12 @@ const getDirectorByEmail = asyncHandler(async (req, res) => {
 
 // Create a new tournament director end point
 const createDirector = asyncHandler(async (req, res) => {
-  const { clerkUserId, phoneNumber, ...otherFields} = req.body;
+  const { clerkUserId, phoneNumber, ...otherFields } = req.body;
 
   // Create the Tournament Director in the database
   const newDirector = await prisma.tournamentDirector.create({
     data: {
-      phoneNumber:phoneNumber,
+      phoneNumber: phoneNumber,
       ...otherFields,
     },
   });
@@ -68,7 +69,7 @@ const createDirector = asyncHandler(async (req, res) => {
       publicMetadata: {
         databaseId: newDirector.id, // Using the database-generated ID
         phoneNumber: phoneNumber,
-        role:"director",
+        role: "director",
       },
     });
   } catch (error) {
@@ -77,7 +78,6 @@ const createDirector = asyncHandler(async (req, res) => {
 
   return res.status(StatusCodes.CREATED).json(newDirector);
 }, "TournamentDirector");
-
 
 // Update a tournament director's information
 const updateDirector = asyncHandler(async (req, res) => {
