@@ -109,6 +109,31 @@ const updatePlayer = asyncHandler(async (req, res) => {
   return res.status(StatusCodes.OK).json(updatedPlayer);
 }, "Player");
 
+//databaseID in this case is the player ID that is on the database;
+// upsert = If this record exists, update it; if not, create a new one.
+const registerPlayer = asyncHandler(async (req, res) => {
+  const { tournamentId, databaseId, hasPaid } = req.body;
+  if (!tournamentId || !databaseId) {
+    const error = new Error("Tournament ID or Player ID must be provided");
+    error.statusCode = StatusCodes.BAD_REQUEST;
+    throw error;
+  }
+  const registerPlayer = await prisma.player.update({
+    where: { id: databaseId },
+    data: {
+      hasPaid: hasPaid,
+      tournaments: {
+        connect: { id: tournamentId },
+      },
+    },
+  });
+
+  return res.status(StatusCodes.OK).json({
+    message: "Player has successfully registered",
+    registerPlayer: registerPlayer,
+  });
+});
+
 /**
  * Deletes a player based on their ID.
  *
@@ -120,6 +145,7 @@ const updatePlayer = asyncHandler(async (req, res) => {
  */
 const deletePlayer = async (req, res) => {
   const { id } = req.query;
+  const { tournamentId, databaseId } = req.body;
   if (!id) {
     const error = new Error("Player ID must be provided");
     error.statusCode = StatusCodes.BAD_REQUEST;
@@ -165,6 +191,7 @@ const deleteAllPlayers = async (req, res) => {
 const handler = async (req, res) => {
   // Use a switch statement to route to the correct function based on the HTTP method
   const { id, email } = req.query;
+  const {tournamentId,databaseId,hasPaid} = req.body
   switch (req.method) {
     case "GET":
       if (id) {
@@ -177,7 +204,11 @@ const handler = async (req, res) => {
       break;
     case "POST":
       // Handle POST requests with the createPlayer function
-      await createPlayer(req, res);
+      if (tournamentId && databaseId && hasPaid) {
+        await playerRegistration(req, res);
+      } else {
+        await createPlayer(req, res);
+      }
       break;
     case "PUT":
       // Handle POST requests with the createPlayer function

@@ -1,7 +1,6 @@
 import React from "react";
-import RegistrationModal from "@/app/components/registrationmodal/RegistrationModal";
 import FetchTournaments from "@/app/components/tournaments/FetchTournaments";
-import { SimpleGrid, Skeleton } from "@chakra-ui/react";
+import { SimpleGrid } from "@chakra-ui/react";
 import TournamentCard from "./TournamentCard";
 
 const PlayerTournaments = () => {
@@ -10,7 +9,6 @@ const PlayerTournaments = () => {
   const activeTournaments = tournaments.filter(
     (tournament) => tournament.active === true
   );
-
 
   if (error) {
     return <div>There was an error getting the active tournaments</div>;

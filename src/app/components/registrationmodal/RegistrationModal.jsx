@@ -14,34 +14,45 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
+import { useState } from "react";
 
 import { MdOutlineAddLocationAlt, MdAddReaction } from "react-icons/md";
 //this modal should have tournament details, should have buttons that users can use to register
 
-const RegistrationModal = ({ isOpen, onClose,name, tournamentId, databaseId  }) => {
+const RegistrationModal = ({
+  isOpen,
+  onClose,
+  name,
+  tournamentId,
+  databaseId,
+}) => {
   const toast = useToast();
-  // use end point, will need tournament ID and player ID 
+
   console.log(tournamentId, databaseId);
 
-   const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleOnSubmit = async (hasPaid) => {
     try {
-      axios.post("/api/tournaments/", {tournamentId, databaseId});
+      axios.post("/api/players/", { tournamentId, databaseId, hasPaid });
 
-    toast({
-      title: `You have signed up for ${name}`,
-      description: "You will pay on site. Director will be notified.",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
-  } catch(err){
-    console.log("Could not register", err);
-  }
-
-
+      toast({
+        title: `You have signed up for ${name}`,
+        description: "You will pay on site. Director will be notified.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (err) {
+      console.log("Could not register", err);
+      toast({
+        title: `Sign up failed ${name}`,
+        description: `The Sign up failed, please try again, ${err}`,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
+
   return (
     <Modal isOpen={isOpen}>
       <Flex h="100vh" justifyContent="center" alignItems="center">
@@ -67,7 +78,7 @@ const RegistrationModal = ({ isOpen, onClose,name, tournamentId, databaseId  }) 
                     transform: "translateY(-10px)",
                     boxShadow: "lg",
                   }}
-                  onClick={handleSubmit}
+                  onClick={() => handleOnSubmit(false)}
                 >
                   Pay On Site
                 </Button>
@@ -79,6 +90,7 @@ const RegistrationModal = ({ isOpen, onClose,name, tournamentId, databaseId  }) 
                     transform: "translateY(-10px)",
                     boxShadow: "lg",
                   }}
+                  onClick={() => handleOnSubmit(true)}
                 >
                   Already Paid, Sign Me Up!
                 </Button>

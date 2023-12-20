@@ -240,7 +240,6 @@ const SidebarWithHeader = ({ user }) => {
             user.publicMetadata.role === "director" && <DirectorTournaments />}
           {activeComponent === "Active Tournaments" &&
             user.publicMetadata.role === "player" && <PlayerTournaments />}{" "}
-          //somehow pass tournament ID here...
         </div>
       </Box>
     </Box>

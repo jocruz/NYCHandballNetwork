@@ -9,49 +9,74 @@ datasource db {
 }
 
 model Player {
-  id             String       @id @default(uuid()) @db.Uuid
-  name           String
-  email          String       @unique // Nullable since email might be optional
-  homePark       String?
-  currentPark    String?
-  categoryRank   String?
-  overallRank    Int?
-  tournaments    Tournament[] @relation("PlayerTournaments")
-  matchesAsTeamA Match[]      @relation("PlayersTeamA")
-  matchesAsTeamB Match[]      @relation("PlayersTeamB")
-  timeouts       Timeout[]
+  // Scalar Fields:
+  id                      String             @id @default(uuid()) @db.Uuid
+  name                    String
+  email                   String             @unique // Nullable since email might be optional
+  homePark                String?
+  currentPark             String?
+  categoryRank            String?
+  overallRank             Int?
+  // Relation Fields:
+  tournamentRegistrations PlayerTournament[]
+  tournaments             Tournament[]       @relation("PlayerTournaments")
+  matchesAsTeamA          Match[]            @relation("PlayersTeamA")
+  matchesAsTeamB          Match[]            @relation("PlayersTeamB")
+  timeouts                Timeout[]
 
+  // ... mapping ...
   @@map("players")
 }
 
 model TournamentDirector {
-  id          String       @id @default(uuid()) @db.Uuid
+  // Scalar Fields:
+  id          String @id @default(uuid()) @db.Uuid
   name        String
-  email       String       @unique
-  phoneNumber String       @unique
+  email       String @unique
+  phoneNumber String @unique
   rating      Int?
+
   tournaments Tournament[] @relation("DirectorTournaments")
 
+  // ... mapping ...
   @@map("tournament_directors")
 }
 
 model Tournament {
-  id           String             @id @default(uuid()) @db.Uuid
-  name         String             @unique
-  date         DateTime
-  type         String
-  createdById  String?            @db.Uuid
-  totalPlayers Int?
-  price        Int?
-  fbUrl        String?
-  active       Boolean            @default(true)
-  matches      Match[]
-  players      Player[]           @relation("PlayerTournaments")
-  location     String
-  directorId   String             @db.Uuid
-  director     TournamentDirector @relation(fields: [directorId], references: [id], name: "DirectorTournaments")
+  // Scalar Fields:
+  id                  String             @id @default(uuid()) @db.Uuid
+  name                String             @unique
+  date                DateTime
+  type                String
+  createdById         String?            @db.Uuid
+  totalPlayers        Int?
+  price               Int?
+  fbUrl               String?
+  active              Boolean            @default(true)
+  directorId          String             @db.Uuid
+  // Relation Fields:
+  matches             Match[]
+  players             Player[]           @relation("PlayerTournaments")
+  location            String
+  playerRegistrations PlayerTournament[]
+  director            TournamentDirector @relation(fields: [directorId], references: [id], name: "DirectorTournaments")
 
+  // ... mapping ...
   @@map("tournaments")
+}
+
+model PlayerTournament {
+  // Relational Fields:
+  player   Player @relation(fields: [playerId], references: [id]) // Relation to the Player model. The playerId field below is the foreign key linking to the Player's id.
+  playerId String  @db.Uuid// Foreign key referencing the id of the Player. Part of the composite primary key.
+  tournament   Tournament @relation(fields: [tournamentId], references: [id]) // Relation to the Tournament model. The tournamentId field below is the foreign key linking to the Tournament's id.
+  tournamentId String  @db.Uuid // Foreign key referencing the id of the Tournament. Part of the composite primary key.
+  // Scalar Field:
+  hasPaid Boolean @default(false) // Boolean field indicating whether the player has paid for the tournament.
+  // Primary Key Definition:
+  @@id([playerId, tournamentId]) // Composite primary key using both playerId and tournamentId. Ensures uniqueness of each Player-Tournament pair.
+  // Mapping to a Specific Table in the Database:
+  @@map("_playertournaments") // Mapping this model to an existing table named "_playerTournaments" in the database.
 }
 
 enum GameType {

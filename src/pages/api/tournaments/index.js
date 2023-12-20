@@ -106,28 +106,6 @@ const updateTournament = asyncHandler(async (req, res) => {
     tournament: updatedTournament,
   });
 }, "Tournament");
-
-const playerRegistration = asyncHandler(async (req, res) => {
-  const { tournamentId, databaseId } = req.body;
-  if (!tournamentId || !databaseId) {
-    const error = new Error("Tournament ID or Player ID must be provided");
-    error.statusCode = StatusCodes.BAD_REQUEST;
-    throw error;
-  }
-  const registerPlayer = await prisma.tournament.update({
-    where: {id: tournamentId},
-    data: {
-      players: {
-        connect: { id: databaseId },
-      },
-    },
-  });
-
-  return res.status(StatusCodes.OK).json({
-    message: "Player has successfully registered",
-    registerPlayer: registerPlayer,
-  });
-});
 /**
  * Deletes a specific tournament by its ID.
  *
@@ -185,24 +163,20 @@ const deleteAllTournaments = async (req, res) => {
 const handler = async (req, res) => {
   // Use a switch statement to route to the correct function based on the HTTP method
   const { id } = req.query;
-  const { tournamentId, databaseId } = req.body;
+
   switch (req.method) {
     case "GET":
       // Handle GET requests with the getTournament function
       if (id) {
         await getSingleTournament(req, res);
       } else {
-        await getAllTournaments(req, res);
-      }
+        await getAllTournaments(req, res);}
       break;
     case "POST":
       // Handle POST requests with the createTournament function
-      if (tournamentId && databaseId){
-        await playerRegistration(req,res)
-      } else{
-        await createTournament(req, res);
-      }
+      await createTournament(req, res);
       break;
+
     case "PUT":
       // Handle PUT requests with the updateTournament function
       await updateTournament(req, res);
