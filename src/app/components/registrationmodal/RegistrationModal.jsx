@@ -28,11 +28,11 @@ const RegistrationModal = ({
 }) => {
   const toast = useToast();
 
-  console.log(tournamentId, databaseId);
 
   const handleOnSubmit = async (hasPaid) => {
     try {
-      axios.post("/api/players/", { tournamentId, databaseId, hasPaid });
+      console.log(tournamentId, databaseId,hasPaid);
+      await axios.post("/api/players/", { tournamentId, databaseId, hasPaid });
 
       toast({
         title: `You have signed up for ${name}`,
@@ -55,7 +55,7 @@ const RegistrationModal = ({
 
   return (
     <Modal isOpen={isOpen}>
-      <Flex h="100vh" justifyContent="center" alignItems="center">
+      <Flex justifyContent="center" alignItems="center">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Tournament Registration For {name}</ModalHeader>

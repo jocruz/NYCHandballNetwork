@@ -65,18 +65,21 @@ const getPlayerByEmail = asyncHandler(async (req, res) => {
  * @returns {Promise<Response>} A promise that resolves with the response object containing the created player data.
  */
 const createPlayer = asyncHandler(async (req, res) => {
-  const { clerkUserId, phoneNumber } = req.body;
+  console.log("createPlayer called with:", req.body);
+
+  const { phoneNumber, ...otherFields } = req.body;
+
+  const newPlayer = await prisma.player.create({
+    data: {...otherFields},
+  });
+
 
   await clerkClient.users.updateUserMetadata(clerkUserId, {
     publicMetadata: {
-      id: clerkUserId,
+      id: newPlayer.id,
       phoneNumber: phoneNumber,
       role: "player",
     },
-  });
-
-  const newPlayer = await prisma.player.create({
-    data: req.body,
   });
 
   return res.status(StatusCodes.CREATED).json(newPlayer);
@@ -112,25 +115,33 @@ const updatePlayer = asyncHandler(async (req, res) => {
 //databaseID in this case is the player ID that is on the database;
 // upsert = If this record exists, update it; if not, create a new one.
 const registerPlayer = asyncHandler(async (req, res) => {
+  console.log("registerPlayer called with:", req.body);
   const { tournamentId, databaseId, hasPaid } = req.body;
   if (!tournamentId || !databaseId) {
     const error = new Error("Tournament ID or Player ID must be provided");
     error.statusCode = StatusCodes.BAD_REQUEST;
     throw error;
   }
-  const registerPlayer = await prisma.player.update({
-    where: { id: databaseId },
-    data: {
-      hasPaid: hasPaid,
-      tournaments: {
-        connect: { id: tournamentId },
+  const registeredPlayer = await prisma.playerTournament.upsert({
+    where: {
+      playerId_tournamentId: {
+        playerId: databaseId,
+        tournamentId: tournamentId,
       },
+    },
+    update: {
+      hasPaid: hasPaid,
+    },
+    create: {
+      playerId: databaseId,
+      tournamentId: tournamentId,
+      hasPaid: hasPaid,
     },
   });
 
   return res.status(StatusCodes.OK).json({
     message: "Player has successfully registered",
-    registerPlayer: registerPlayer,
+    registeredPlayer: registeredPlayer,
   });
 });
 
@@ -145,7 +156,6 @@ const registerPlayer = asyncHandler(async (req, res) => {
  */
 const deletePlayer = async (req, res) => {
   const { id } = req.query;
-  const { tournamentId, databaseId } = req.body;
   if (!id) {
     const error = new Error("Player ID must be provided");
     error.statusCode = StatusCodes.BAD_REQUEST;
@@ -191,7 +201,7 @@ const deleteAllPlayers = async (req, res) => {
 const handler = async (req, res) => {
   // Use a switch statement to route to the correct function based on the HTTP method
   const { id, email } = req.query;
-  const {tournamentId,databaseId,hasPaid} = req.body
+  const {tournamentId,databaseId} = req.body
   switch (req.method) {
     case "GET":
       if (id) {
@@ -204,8 +214,8 @@ const handler = async (req, res) => {
       break;
     case "POST":
       // Handle POST requests with the createPlayer function
-      if (tournamentId && databaseId && hasPaid) {
-        await playerRegistration(req, res);
+      if (tournamentId !== undefined && databaseId !== undefined)  {
+        await registerPlayer(req, res);
       } else {
         await createPlayer(req, res);
       }

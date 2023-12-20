@@ -3,8 +3,8 @@
 
 import SidebarWithHeader from "../sidebar/sidebar";
 
-const DirectorDashboard = () => {
-  return <SidebarWithHeader />;
+const DirectorDashboard = ({user}) => {
+  return <SidebarWithHeader user = {user}/>;
 };
 
 export default DirectorDashboard;

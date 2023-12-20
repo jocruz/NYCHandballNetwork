@@ -52,11 +52,14 @@ const getDirectorByEmail = asyncHandler(async (req, res) => {
 
 // Create a new tournament director end point
 const createDirector = asyncHandler(async (req, res) => {
-  const { clerkUserId, phoneNumber } = req.body;
+  const { clerkUserId, phoneNumber, ...otherFields} = req.body;
 
   // Create the Tournament Director in the database
   const newDirector = await prisma.tournamentDirector.create({
-    data: req.body,
+    data: {
+      phoneNumber:phoneNumber,
+      ...otherFields,
+    },
   });
 
   // Store the database-generated ID in the Clerk user's metadata
@@ -65,7 +68,7 @@ const createDirector = asyncHandler(async (req, res) => {
       publicMetadata: {
         databaseId: newDirector.id, // Using the database-generated ID
         phoneNumber: phoneNumber,
-        role:"player",
+        role:"director",
       },
     });
   } catch (error) {
