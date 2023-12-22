@@ -14,14 +14,13 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useState } from "react";
 
 import { MdOutlineAddLocationAlt, MdAddReaction } from "react-icons/md";
 //this modal should have tournament details, should have buttons that users can use to register
 
 const RegistrationModal = ({
-  isOpen,
-  onClose,
+  isOpenRegistration,
+  onCloseRegistration,
   name,
   tournamentId,
   databaseId,
@@ -54,7 +53,7 @@ const RegistrationModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen}>
+    <Modal isOpen={isOpenRegistration}>
       <Flex justifyContent="center" alignItems="center">
         <ModalOverlay />
         <ModalContent>
@@ -102,7 +101,7 @@ const RegistrationModal = ({
             <Button
               colorScheme="blue"
               mr={3}
-              onClick={onClose}
+              onClick={onCloseRegistration}
               rounded={"lg"}
               _hover={{
                 transform: "translateY(-10px)",

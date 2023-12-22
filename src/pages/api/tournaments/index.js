@@ -49,7 +49,6 @@ const getSingleTournament = asyncHandler(async (req, res) => {
 
 const getTournamentDetails = asyncHandler(async (req, res) => {
   const { id } = req.query;
-
   if (!id) {
     return res.status(StatusCodes.BAD_REQUEST).json({ message: "Tournament ID is required" });
   }
@@ -68,11 +67,12 @@ const getTournamentDetails = asyncHandler(async (req, res) => {
   if (!tournamentDetails) {
     return res.status(StatusCodes.NOT_FOUND).json({ message: "Tournament not found" });
   }
-
-  console.log(tournamentDetails); // Debugging: log the retrieved data
-
+  
   return res.status(StatusCodes.OK).json(tournamentDetails);
 }, "TournamentDetails");
+
+
+// get registered players from the current tournament:
 
 
 /**
@@ -190,7 +190,7 @@ const deleteAllTournaments = async (req, res) => {
  */
 const handler = async (req, res) => {
   // Use a switch statement to route to the correct function based on the HTTP method
-  const { id} = req.query;
+  const { id } = req.query;
 
   switch (req.method) {
     case "GET":

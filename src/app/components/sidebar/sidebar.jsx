@@ -35,6 +35,7 @@ import { HiMiniTrophy } from "react-icons/hi2";
 import CreateTournamentPage from "@/app/createTournament/page";
 import DirectorTournaments from "../tournaments/DirectorTournaments";
 import PlayerTournaments from "@/app/components/tournaments/playerTournaments";
+import ViewParticipants from "../modals/ViewParticipants";
 
 const DirectorLinkItems = [
   { name: "Home", icon: FiHome },
