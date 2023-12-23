@@ -43,7 +43,16 @@ const TournamentCard = ({
   const role = user.publicMetadata.role;
   const userId = user.publicMetadata.databaseId;
 
-  const initialTournamentData = {name,type,location,date,id,active,price,totalPlayers};
+  const initialTournamentData = {
+    name,
+    type,
+    location,
+    date,
+    id,
+    active,
+    price,
+    totalPlayers,
+  };
   const {
     isOpen: isOpenRegistration,
     onOpen: onOpenRegistration,
@@ -181,7 +190,7 @@ const TournamentCard = ({
               isOpenEditModal={isOpenEditModal}
               onCloseEditModal={onCloseEditModal}
               tournamentId={id}
-              initialTournamentData = {initialTournamentData}
+              initialTournamentData={initialTournamentData}
             />
           )}
         </CardFooter>
