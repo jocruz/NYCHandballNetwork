@@ -10,6 +10,7 @@ import {
   CardBody,
   Divider,
   useDisclosure,
+  ButtonGroup,
 } from "@chakra-ui/react";
 import { FaLocationDot } from "react-icons/fa6";
 
@@ -17,6 +18,8 @@ import { useUser } from "@clerk/nextjs";
 import RegistrationModal from "../registrationmodal/RegistrationModal";
 import ViewParticipants from "../modals/ViewParticipants";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import TournamentDetails from "../modals/TournamentDetails";
+
 const TournamentCard = ({
   name,
   type,
@@ -40,6 +43,7 @@ const TournamentCard = ({
   const role = user.publicMetadata.role;
   const userId = user.publicMetadata.databaseId;
 
+  const initialTournamentData = {name,type,location,date,id,active,price,totalPlayers};
   const {
     isOpen: isOpenRegistration,
     onOpen: onOpenRegistration,
@@ -51,25 +55,40 @@ const TournamentCard = ({
     onClose: onCloseViewDetails,
   } = useDisclosure();
 
+  const {
+    isOpen: isOpenEditModal,
+    onOpen: onOpenEditModal,
+    onClose: onCloseEditModal,
+  } = useDisclosure();
+
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const handleButtonClick = () => {
-    console.log(pathname);
+  // different functions different buttons
+
+  // const openParticipantModal
+
+  // const  openEditModal
+
+  const openParticipantModal = () => {
+    console.log("button was clicked in TournamentCard.jsx for modal to open");
 
     router.push(`${pathname}?tournamentid=${id}`);
 
-    console.log(role);
-    if (role === "director") {
-      onOpenViewDetails();
-    } else {
-      isOpenRegistration();
-    }
+    onOpenViewDetails();
+  };
+
+  const openEditModal = () => {
+    console.log("This is the openEditModal function being pressed");
+
+    router.push(`${pathname}?tournamentid=${id}`);
+
+    onOpenEditModal();
   };
 
   const search = searchParams.get("tournamentid");
-  console.log("This is the searchParam results", search)
+  console.log("This is the searchParam results", search);
 
   console.log(search);
   return (
@@ -99,28 +118,72 @@ const TournamentCard = ({
             Entry Fee: ${price} , Only {totalPlayers} players total entry
           </Text>
         </CardBody>
+
         <CardFooter>
-          <Button
-            colorScheme="teal"
-            variant="solid"
-            onClick={handleButtonClick}
-          >
-            {role === "director" ? "View Details" : "Register"}
-          </Button>
-          <RegistrationModal
-            isOpenRegistration={isOpenRegistration}
-            onCloseRegistration={onCloseRegistration}
-            tournamentId={id}
-            databaseId={userId}
-            name={name}
-          />
-          <ViewParticipants
-            isOpenViewDetails={isOpenViewDetails}
-            onCloseViewDetails={onCloseViewDetails}
-            tournamentId={id}
-            databaseId={userId}
-            tournamentName={name}
-          />
+          <ButtonGroup>
+            {role === "director" && (
+              <Button
+                colorScheme="teal"
+                variant="solid"
+                onClick={openParticipantModal}
+              >
+                View Participants
+                {/* {role === "director" ? "View Participants" : "Register"} */}
+              </Button>
+            )}
+
+            {role === "director" && (
+              <Button
+                colorScheme="teal"
+                variant="solid"
+                onClick={openEditModal}
+              >
+                Edit Tournament Details
+                {/* {role === "director" ? "View Participants" : "Register"} */}
+              </Button>
+            )}
+
+            {role === "player" && (
+              <Button colorScheme="teal" variant="solid">
+                Register
+                {/* {role === "director" ? "View Participants" : "Register"} */}
+              </Button>
+            )}
+            {role === "player" && (
+              <Button colorScheme="teal" variant="solid">
+                View Details
+                {/* {role === "director" ? "View Participants" : "Register"} */}
+              </Button>
+            )}
+          </ButtonGroup>
+
+          {isOpenRegistration && (
+            <RegistrationModal
+              isOpenRegistration={isOpenRegistration}
+              onCloseRegistration={onCloseRegistration}
+              tournamentId={id}
+              databaseId={userId}
+              name={name}
+            />
+          )}
+          {isOpenViewDetails && (
+            <ViewParticipants
+              isOpenViewDetails={isOpenViewDetails}
+              onCloseViewDetails={onCloseViewDetails}
+              tournamentId={id}
+              databaseId={userId}
+              tournamentName={name}
+            />
+          )}
+
+          {isOpenEditModal && (
+            <TournamentDetails
+              isOpenEditModal={isOpenEditModal}
+              onCloseEditModal={onCloseEditModal}
+              tournamentId={id}
+              initialTournamentData = {initialTournamentData}
+            />
+          )}
         </CardFooter>
       </Card>
     </Flex>

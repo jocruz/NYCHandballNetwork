@@ -18,42 +18,40 @@ import {
   Input,
 } from "@chakra-ui/react";
 import axios from "axios";
+import { useState } from "react";
 
 const TournamentDetails = ({
-  isOpen,
-  onClose,
-  name,
+  isOpenEditModal,
+  onCloseEditModal,
   tournamentId,
-  databaseId,
+  initialTournamentData,
 }) => {
+  const [name, setName] = useState(initialTournamentData.name || "");
+  const [date, setDate] = useState("");
+  const [price, setPrice] = useState(initialTournamentData.price || "");
+  const [location, setLocation] = useState(
+    initialTournamentData.location || ""
+  );
+
   const toast = useToast();
 
-  const handleOnSubmit = async () => {
-    try {
-      console.log(tournamentId);
-      await axios.put("/api/tournament/", { tournamentId });
+  const tournamentData = {
+    name,
+    date,
+    location,
+    price,
+  };
 
-      toast({
-        title: `Update Complete  ${name}`,
-        description: "Tournament has been successfully updated.",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
+  const handleFormSubmit = async () => {
+    try {
+      axios.put("/api/tournaments/", tournamentData);
     } catch (err) {
-      console.log("Could not update tournament", err);
-      toast({
-        title: `Update  failed`,
-        description: `Changing the tournament details failed${err}`,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+      console.log(err);
     }
   };
 
   return (
-    <Modal isOpen={true}>
+    <Modal isOpen={isOpenEditModal}>
       <Flex justifyContent="center" alignItems="center">
         <ModalOverlay />
         <ModalContent>
@@ -64,27 +62,45 @@ const TournamentDetails = ({
               reflect after you hit submit.
             </Text>
             <Spacer h={10} />
-            <FormControl>
+
+            <FormControl onSubmit={handleFormSubmit}>
               <FormLabel>Name of Tournament</FormLabel>
-              <Input type="text" />
+              <Input
+                type="text"
+                placeholder={name}
+                onChange={(e) => setName(e.target.value)}
+              />
               <FormHelperText>
                 Change the title of your tournament{" "}
               </FormHelperText>
               <Spacer h={8} />
               <FormLabel>Change Date of Tournament</FormLabel>
-              <Input type="date" />
+              <Input
+                id="date-of-tournament"
+                type="date"
+                placeholder={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
               <FormHelperText>
                 Change the date of your tournament{" "}
               </FormHelperText>
               <Spacer h={8} />
               <FormLabel>Change Price of Tournament</FormLabel>
-              <Input type="number" />
+              <Input
+                type="number"
+                placeholder={initialTournamentData.price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
               <FormHelperText>
                 Change the price of your tournament{" "}
               </FormHelperText>
               <Spacer h={8} />
               <FormLabel>Change Location of Tournament</FormLabel>
-              <Input type="text" />
+              <Input
+                type="text"
+                placeholder={initialTournamentData.location}
+                onChange={(e) => setLocation(e.target.value)}
+              />
               <FormHelperText>
                 Change the Location of your tournament{" "}
               </FormHelperText>
@@ -121,7 +137,7 @@ const TournamentDetails = ({
             <Button
               colorScheme="blue"
               mr={3}
-              onClick={onClose}
+              onClick={onCloseEditModal}
               rounded={"lg"}
               _hover={{
                 transform: "translateY(-10px)",
