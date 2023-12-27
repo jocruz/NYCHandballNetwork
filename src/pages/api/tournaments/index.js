@@ -49,6 +49,7 @@ const getSingleTournament = asyncHandler(async (req, res) => {
 
 const getTournamentDetails = asyncHandler(async (req, res) => {
   const { id } = req.query;
+  console.log("Inside getTournamentDetails, ID: ", id);
   if (!id) {
     return res.status(StatusCodes.BAD_REQUEST).json({ message: "Tournament ID is required" });
   }
@@ -61,6 +62,7 @@ const getTournamentDetails = asyncHandler(async (req, res) => {
           player: true, // Include details about the player
         },
       },
+      
     },
   });
 

@@ -20,7 +20,7 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   FiHome,
@@ -35,7 +35,7 @@ import { HiMiniTrophy } from "react-icons/hi2";
 import CreateTournamentPage from "@/app/createTournament/page";
 import DirectorTournaments from "../tournaments/DirectorTournaments";
 import PlayerTournaments from "@/app/components/tournaments/playerTournaments";
-import ViewParticipants from "../modals/ViewParticipants";
+
 
 const DirectorLinkItems = [
   { name: "Home", icon: FiHome },
@@ -54,6 +54,13 @@ const SidebarContent = ({ onClose, onSetActive, user, ...rest }) => {
       ? DirectorLinkItems
       : PlayerLinkItems;
 
+      useEffect(() => {
+        console.log('SideBar.jsx Mounted');
+    
+        return () => {
+          console.log('sideBar.jsx Unmounting');
+        };
+      }, []);
   return (
     <Box
       transition="3s ease"
@@ -238,7 +245,7 @@ const SidebarWithHeader = ({ user }) => {
           {activeComponent === "Create Tournament" &&
             user.publicMetadata.role === "director" && <CreateTournamentPage />}
           {activeComponent === "My Tournaments" &&
-            user.publicMetadata.role === "director" && <DirectorTournaments />}
+            user.publicMetadata.role === "director" && <DirectorTournaments user={user} />}
           {activeComponent === "Active Tournaments" &&
             user.publicMetadata.role === "player" && <PlayerTournaments />}{" "}
         </div>

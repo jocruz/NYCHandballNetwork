@@ -9,10 +9,15 @@ import {
   Box,
   Button,
 } from "@chakra-ui/react";
+import axios from "axios";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-
-const ViewParticipants = ({ isOpenViewDetails, onCloseViewDetails }) => {
+const ViewParticipants = ({
+  isOpenViewDetails,
+  onCloseViewDetails,
+  tournamentId,
+}) => {
   const toast = useToast();
 
   // Mock data for players
@@ -21,8 +26,28 @@ const ViewParticipants = ({ isOpenViewDetails, onCloseViewDetails }) => {
     { name: "Player 2", hasPaid: true },
     //...other players
   ];
+  const searchParams = useSearchParams();
 
-  console.log("viewparticiapnts.jsx");
+  const id = searchParams.get("id");
+
+  const [playerData, setPlayerData] = useState([]);
+
+  const getPlayers = async () => {
+    try {
+      const response = await axios.get(`/api/tournaments?id=${id}`);
+      const data = response.data.playerRegistrations;
+      setPlayerData(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    console.log("viewParticipants.jsx component has been mounted")
+    getPlayers();
+  }, [id]);
+
+
   return (
     <Modal isOpen={isOpenViewDetails}>
       <ModalOverlay />

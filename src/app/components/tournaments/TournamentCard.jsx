@@ -29,8 +29,9 @@ const TournamentCard = ({
   active,
   price,
   totalPlayers,
+  user,
 }) => {
-  const { user } = useUser();
+  // const { user } = useUser();
   const betterDate = new Date(date);
 
   // Format for display
@@ -74,32 +75,26 @@ const TournamentCard = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // different functions different buttons
-
-  // const openParticipantModal
-
-  // const  openEditModal
+  // Everytime we open up a modal, we will add a query to the URL, will have to refactor this later.
+  // commenting out for now because we can just pass the tournamentID and not have to add the query to the URL
 
   const openParticipantModal = () => {
     console.log("button was clicked in TournamentCard.jsx for modal to open");
 
-    router.push(`${pathname}?tournamentid=${id}`);
+    router.push(`${pathname}?id=${id}`);
 
     onOpenViewDetails();
   };
 
-  const openEditModal = () => {
-    console.log("This is the openEditModal function being pressed");
+  // const openEditModal = () => {
+  //   console.log("This is the openEditModal function being pressed");
 
-    router.push(`${pathname}?tournamentid=${id}`);
+  //   router.push(`${pathname}?tournamentid=${id}`);
 
-    onOpenEditModal();
-  };
+  //   onOpenEditModal();
+  // };
 
-  const search = searchParams.get("tournamentid");
-  console.log("This is the searchParam results", search);
 
-  console.log(search);
   return (
     <Flex direction="row" wrap="wrap" justify="center" align="center">
       <Card align="center" size="md">
@@ -137,7 +132,6 @@ const TournamentCard = ({
                 onClick={openParticipantModal}
               >
                 View Participants
-                {/* {role === "director" ? "View Participants" : "Register"} */}
               </Button>
             )}
 
@@ -145,23 +139,23 @@ const TournamentCard = ({
               <Button
                 colorScheme="teal"
                 variant="solid"
-                onClick={openEditModal}
+                onClick={() => onOpenEditModal()}
               >
                 Edit Tournament Details
-                {/* {role === "director" ? "View Participants" : "Register"} */}
+
               </Button>
             )}
 
             {role === "player" && (
               <Button colorScheme="teal" variant="solid">
                 Register
-                {/* {role === "director" ? "View Participants" : "Register"} */}
+
               </Button>
             )}
             {role === "player" && (
               <Button colorScheme="teal" variant="solid">
                 View Details
-                {/* {role === "director" ? "View Participants" : "Register"} */}
+
               </Button>
             )}
           </ButtonGroup>
