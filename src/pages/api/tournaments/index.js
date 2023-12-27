@@ -115,7 +115,7 @@ const createTournament = asyncHandler(async (req, res) => {
  */
 const updateTournament = asyncHandler(async (req, res) => {
   // Locate tournament index by ID or return -1 if not found.
-  const { id } = req.query;
+  const { id } = req.body;
   if (!id) {
     const error = new Error("Tournament ID must be provided");
     error.statusCode = StatusCodes.BAD_REQUEST;

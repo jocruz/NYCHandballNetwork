@@ -27,7 +27,7 @@ const TournamentDetails = ({
   initialTournamentData,
 }) => {
   const [name, setName] = useState(initialTournamentData.name || "");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(initialTournamentData.date || "");
   const [price, setPrice] = useState(initialTournamentData.price || "");
   const [location, setLocation] = useState(
     initialTournamentData.location || ""
@@ -35,16 +35,29 @@ const TournamentDetails = ({
 
   const toast = useToast();
 
+  const id = tournamentId;
+
+  const isoDate = new Date(date).toISOString();
+  console.log(initialTournamentData.date);
+
   const tournamentData = {
+    id,
     name,
-    date,
     location,
-    price,
+    date: isoDate,
+    price: +price, // unary plus operator (+) in JavaScript is a simple and quick way to convert values to numbers.
   };
 
   const handleFormSubmit = async () => {
     try {
       axios.put("/api/tournaments/", tournamentData);
+      toast({
+        title: "Update Successful.",
+        description: "You've successfully updated your tournament!.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -116,18 +129,9 @@ const TournamentDetails = ({
                     transform: "translateY(-10px)",
                     boxShadow: "lg",
                   }}
+                  onClick={handleFormSubmit}
                 >
                   Submit
-                </Button>
-                <Button
-                  colorScheme="facebook"
-                  rounded={"lg"}
-                  _hover={{
-                    transform: "translateY(-10px)",
-                    boxShadow: "lg",
-                  }}
-                >
-                  Back
                 </Button>
               </ButtonGroup>
             </Flex>
