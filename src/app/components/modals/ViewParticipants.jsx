@@ -8,6 +8,7 @@ import {
   useToast,
   Box,
   Button,
+  ModalFooter,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
@@ -47,7 +48,6 @@ const ViewParticipants = ({
     getPlayers();
   }, [id]);
 
-
   return (
     <Modal isOpen={isOpenViewDetails}>
       <ModalOverlay />
@@ -58,11 +58,11 @@ const ViewParticipants = ({
             <Text fontSize="xl" mb="4">
               Players
             </Text>
-            {players.map((player, index) => (
+            {playerData.length !== 0 ? playerData.map((player, index) => (
               <Box key={index} p={3} boxShadow="md" mb={3}>
-                {player.name}
+                {player.player.name}
               </Box>
-            ))}
+            )) : <Text flex="1" p={3} boxShadow="md"> Currently No Players Have Signed Up </Text>}
           </Box>
 
           {/* Action and Status Section */}
@@ -70,7 +70,7 @@ const ViewParticipants = ({
             <Text fontSize="xl" mb="4">
               Actions & Status
             </Text>
-            {players.map((player, index) => (
+            {playerData.map((player, index) => (
               <Flex key={index} align="center" mb={3}>
                 <Text flex="1" p={3} boxShadow="md">
                   {player.hasPaid ? "Has Paid" : "Plans to Pay On Site"}
@@ -78,9 +78,10 @@ const ViewParticipants = ({
               </Flex>
             ))}
           </Box>
+        </Flex>
+        <ModalFooter>
           <Button
             colorScheme="blue"
-            mr={3}
             onClick={onCloseViewDetails}
             rounded={"lg"}
             _hover={{
@@ -90,7 +91,7 @@ const ViewParticipants = ({
           >
             Close
           </Button>
-        </Flex>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
