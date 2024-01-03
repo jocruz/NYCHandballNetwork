@@ -35,12 +35,14 @@ import { HiMiniTrophy } from "react-icons/hi2";
 import CreateTournamentPage from "@/app/createTournament/page";
 import DirectorTournaments from "../tournaments/DirectorTournaments";
 import PlayerTournaments from "@/app/components/tournaments/playerTournaments";
-
+import TournamentBracket from "../tournaments/TournamentBracket";
+import MatchesManager from "../tournaments/MatchesManager";
 
 const DirectorLinkItems = [
   { name: "Home", icon: FiHome },
   { name: "My Tournaments", icon: FiTrendingUp },
   { name: "Create Tournament", icon: FiCompass },
+  { name: "Tournament Bracket", icon: FiCompass },
 ];
 const PlayerLinkItems = [
   { name: "Home", icon: FiHome },
@@ -54,13 +56,13 @@ const SidebarContent = ({ onClose, onSetActive, user, ...rest }) => {
       ? DirectorLinkItems
       : PlayerLinkItems;
 
-      useEffect(() => {
-        console.log('SideBar.jsx Mounted');
-    
-        return () => {
-          console.log('sideBar.jsx Unmounting');
-        };
-      }, []);
+  useEffect(() => {
+    console.log("SideBar.jsx Mounted");
+
+    return () => {
+      console.log("sideBar.jsx Unmounting");
+    };
+  }, []);
   return (
     <Box
       transition="3s ease"
@@ -245,9 +247,13 @@ const SidebarWithHeader = ({ user }) => {
           {activeComponent === "Create Tournament" &&
             user.publicMetadata.role === "director" && <CreateTournamentPage />}
           {activeComponent === "My Tournaments" &&
-            user.publicMetadata.role === "director" && <DirectorTournaments user={user} />}
+            user.publicMetadata.role === "director" && (
+              <DirectorTournaments user={user} />
+            )}
           {activeComponent === "Active Tournaments" &&
-            user.publicMetadata.role === "player" && <PlayerTournaments />}{" "}
+            user.publicMetadata.role === "player" && <PlayerTournaments />}
+          {activeComponent === "Tournament Bracket" &&
+            user.publicMetadata.role === "director" && <MatchesManager user={user}/>}
         </div>
       </Box>
     </Box>

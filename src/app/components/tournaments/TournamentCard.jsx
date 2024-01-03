@@ -14,7 +14,6 @@ import {
 } from "@chakra-ui/react";
 import { FaLocationDot } from "react-icons/fa6";
 
-import { useUser } from "@clerk/nextjs";
 import RegistrationModal from "../registrationmodal/RegistrationModal";
 import ViewParticipants from "../modals/ViewParticipants";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -94,7 +93,6 @@ const TournamentCard = ({
   //   onOpenEditModal();
   // };
 
-
   return (
     <Flex direction="row" wrap="wrap" justify="center" align="center">
       <Card align="center" size="md">
@@ -142,20 +140,17 @@ const TournamentCard = ({
                 onClick={() => onOpenEditModal()}
               >
                 Edit Tournament Details
-
               </Button>
             )}
 
             {role === "player" && (
               <Button colorScheme="teal" variant="solid">
                 Register
-
               </Button>
             )}
             {role === "player" && (
               <Button colorScheme="teal" variant="solid">
                 View Details
-
               </Button>
             )}
           </ButtonGroup>
