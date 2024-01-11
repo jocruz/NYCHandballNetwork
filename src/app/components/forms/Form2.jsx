@@ -47,39 +47,35 @@ const Form2 = ({ setTotalPlayer, setType, setPrice }) => {
           Number of Players
         </FormLabel>
         <NumberInput
-          defaultValue={21}
-          min={3}
-          max={128}
-          onChange={(e) => setTotalPlayer(e.target.value)}
-        >
-          <NumberInputField id="number-of-players" />
-        </NumberInput>
-      </FormControl>
-
-      <FormControl as={GridItem} colSpan={[6, 6, null, 2]}>
-        <FormLabel
-          htmlFor="city"
-          fontSize="sm"
-          fontWeight="md"
-          color="gray.700"
-          _dark={{
-            color: "gray.50",
-          }}
-          mt="2%"
-        >
-          Entry Fee Price
-        </FormLabel>
-        <Input
-          type="number"
           focusBorderColor="brand.400"
           shadow="sm"
           size="sm"
           w="full"
           rounded="md"
-          onChange={(e) => {
-            setPrice(e.target.value);
-          }}
-        />
+          onChange={(valueAsString, valueAsNumber) =>
+            setTotalPlayer(valueAsNumber)
+          }
+        >
+          <NumberInputField />
+        </NumberInput>
+      </FormControl>
+
+      <FormControl mt="2%">
+        <FormLabel htmlFor="number-of-players" fontWeight={"normal"}>
+          Entry Fee For Registration
+        </FormLabel>
+        <NumberInput
+          focusBorderColor="brand.400"
+          shadow="sm"
+          size="sm"
+          w="full"
+          rounded="md"
+          onChange={(valueAsString, valueAsNumber) =>
+            setPrice(valueAsNumber)
+          }
+        >
+          <NumberInputField />
+        </NumberInput>
       </FormControl>
     </>
   );

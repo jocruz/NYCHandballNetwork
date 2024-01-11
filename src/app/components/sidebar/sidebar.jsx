@@ -37,12 +37,14 @@ import DirectorTournaments from "../tournaments/DirectorTournaments";
 import PlayerTournaments from "@/app/components/tournaments/playerTournaments";
 import TournamentBracket from "../tournaments/TournamentBracket";
 import MatchesManager from "../tournaments/MatchesManager";
+import Matches from "../matches/matches";
 
 const DirectorLinkItems = [
   { name: "Home", icon: FiHome },
   { name: "My Tournaments", icon: FiTrendingUp },
   { name: "Create Tournament", icon: FiCompass },
   { name: "Tournament Bracket", icon: FiCompass },
+  {name:"Matches Manager", icon: FiCompass},
 ];
 const PlayerLinkItems = [
   { name: "Home", icon: FiHome },
@@ -57,10 +59,10 @@ const SidebarContent = ({ onClose, onSetActive, user, ...rest }) => {
       : PlayerLinkItems;
 
   useEffect(() => {
-    console.log("SideBar.jsx Mounted");
+    console.log("SideBar.jsx Mounted", user);
 
     return () => {
-      console.log("sideBar.jsx Unmounting");
+      console.log("sideBar.jsx Unmounting",);
     };
   }, []);
   return (
@@ -251,9 +253,14 @@ const SidebarWithHeader = ({ user }) => {
               <DirectorTournaments user={user} />
             )}
           {activeComponent === "Active Tournaments" &&
-            user.publicMetadata.role === "player" && <PlayerTournaments />}
+            user.publicMetadata.role === "player" && (
+              <PlayerTournaments user={user} />
+            )}
           {activeComponent === "Tournament Bracket" &&
-            user.publicMetadata.role === "director" && <MatchesManager user={user}/>}
+            user.publicMetadata.role === "director" && (
+              <MatchesManager user={user} />
+            )}
+            {activeComponent ==="Matches Manager" && user.publicMetadata.role==="director" && (<Matches/>)}
         </div>
       </Box>
     </Box>

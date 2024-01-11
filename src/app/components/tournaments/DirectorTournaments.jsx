@@ -1,14 +1,11 @@
 "use client";
 import TournamentCard from "./TournamentCard";
-import TournamentList from "./TournamentList";
 import { SimpleGrid, Skeleton } from "@chakra-ui/react";
-
-// import { useUser } from "@clerk/nextjs";
 
 import FetchTournaments from "@/app/components/tournaments/FetchTournaments";
 import { useEffect } from "react";
 
-const DirectorTournaments = ({user}) => {
+const DirectorTournaments = ({ user }) => {
   let { tournaments, error, isLoading } = FetchTournaments();
   // const { user } = useUser();
   const userDatabaseId = user.publicMetadata.databaseId;
@@ -17,10 +14,10 @@ const DirectorTournaments = ({user}) => {
   );
 
   useEffect(() => {
-    console.log('DirectorTournaments Mounted');
+    console.log("DirectorTournaments Mounted");
 
     return () => {
-      console.log('DirectorTournaments Unmounting');
+      console.log("DirectorTournaments Unmounting");
     };
   }, []);
   if (isLoading) {
@@ -38,7 +35,7 @@ const DirectorTournaments = ({user}) => {
     <div>
       <SimpleGrid columns={3} spacing={4}>
         {directorTournaments.map((tournament) => (
-          <TournamentCard key={tournament.id} user = {user} {...tournament} />
+          <TournamentCard key={tournament.id} user={user} {...tournament} />
         ))}
       </SimpleGrid>
     </div>

@@ -13,6 +13,7 @@ const page = () => {
     // Handle the case where the user data is not available yet
     return <div>No user was found with a designated role, so no dashboard was loaded. Sorry.</div>;
   }
+  console.log("This is the user-dashboard page", userRole);
   return (
     <div>
       {userRole === "director" && <DirectorDashboard user={user} />}

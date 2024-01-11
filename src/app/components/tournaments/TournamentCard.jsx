@@ -40,8 +40,10 @@ const TournamentCard = ({
     day: "numeric",
   });
 
+  console.log(user.publicMetadata.id);
   const role = user.publicMetadata.role;
-  const userId = user.publicMetadata.databaseId;
+
+  const userId = user.publicMetadata.id;
 
   const initialTournamentData = {
     name,
@@ -144,15 +146,15 @@ const TournamentCard = ({
             )}
 
             {role === "player" && (
-              <Button colorScheme="teal" variant="solid">
+              <Button colorScheme="teal" variant="solid" onClick={()=> onOpenRegistration()}>
                 Register
               </Button>
             )}
-            {role === "player" && (
+            {/* {role === "player" && (
               <Button colorScheme="teal" variant="solid">
                 View Details
               </Button>
-            )}
+            )} */}
           </ButtonGroup>
 
           {isOpenRegistration && (

@@ -67,12 +67,13 @@ model Tournament {
 
 model PlayerTournament {
   // Relational Fields:
-  player   Player @relation(fields: [playerId], references: [id]) // Relation to the Player model. The playerId field below is the foreign key linking to the Player's id.
-  playerId String  @db.Uuid// Foreign key referencing the id of the Player. Part of the composite primary key.
+  player       Player     @relation(fields: [playerId], references: [id]) // Relation to the Player model. The playerId field below is the foreign key linking to the Player's id.
+  playerId     String     @db.Uuid // Foreign key referencing the id of the Player. Part of the composite primary key.
   tournament   Tournament @relation(fields: [tournamentId], references: [id]) // Relation to the Tournament model. The tournamentId field below is the foreign key linking to the Tournament's id.
-  tournamentId String  @db.Uuid // Foreign key referencing the id of the Tournament. Part of the composite primary key.
+  tournamentId String     @db.Uuid // Foreign key referencing the id of the Tournament. Part of the composite primary key.
   // Scalar Field:
-  hasPaid Boolean @default(false) // Boolean field indicating whether the player has paid for the tournament.
+  hasPaid      Boolean    @default(false) // Boolean field indicating whether the player has paid for the tournament.
+
   // Primary Key Definition:
   @@id([playerId, tournamentId]) // Composite primary key using both playerId and tournamentId. Ensures uniqueness of each Player-Tournament pair.
   // Mapping to a Specific Table in the Database:
@@ -100,13 +101,13 @@ enum MatchStatus {
 model Match {
   id            String     @id @default(uuid()) @db.Uuid
   matchType     String
-  gameType      Int
+  gameType      Int?
   playersTeamA  Player[]   @relation("PlayersTeamA")
   playersTeamB  Player[]   @relation("PlayersTeamB")
-  scoresTeamA   Int
-  scoresTeamB   Int
-  status        String
-  scheduledTime DateTime
+  scoresTeamA   Int?
+  scoresTeamB   Int?
+  status        String?    @default("PENDING")
+  scheduledTime DateTime?
   tournament    Tournament @relation(fields: [tournamentId], references: [id])
   tournamentId  String     @db.Uuid
   timeouts      Timeout[]

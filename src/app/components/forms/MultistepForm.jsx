@@ -26,9 +26,9 @@ const MultistepForm = () => {
   const [location, setLocation] = useState("");
 
   //Form 2
-  const [totalPlayers, setTotalPlayer] = useState(null);
+  const [totalPlayers, setTotalPlayer] = useState(0);
   const [type, setType] = useState(null);
-  const [price, setPrice] = useState(null);
+  const [price, setPrice] = useState(0);
 
   //Form 3
   const [fbUrl, setFbUrl] = useState("");
@@ -37,6 +37,8 @@ const MultistepForm = () => {
   const test = user; // using the useUser hook to get the user object to then use the user object to get the publicMetadata
   const userDatabaseId = user.publicMetadata.databaseId;
   console.log(user.publicMetadata.databaseId);
+  console.log(price)
+  console.log(typeof price);
   const tournamentData = {
     name,
     date,
@@ -47,6 +49,7 @@ const MultistepForm = () => {
     userDatabaseId,
   };
 
+  console.log(tournamentData)
   if (!user) {
     // Return null, a loading indicator, or handle the lack of user data appropriately
     return <div>Loading user data...</div>;

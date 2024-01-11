@@ -86,13 +86,14 @@ const getTournamentDetails = asyncHandler(async (req, res) => {
  * @returns {Promise<Response>} The response object with the created tournament data.
  */
 const createTournament = asyncHandler(async (req, res) => {
-  const { name, date, type, totalPlayers, location, userDatabaseId } = req.body;
+  const { name, date, type, totalPlayers, location, userDatabaseId, price } = req.body;
 
   const newTournament = await prisma.tournament.create({
     data: {
       name,
       date: new Date(date), // Ensure the date is in a proper format
       type,
+      price,
       totalPlayers,
       location,
       director: {

@@ -20,17 +20,8 @@ const ViewParticipants = ({
   tournamentId,
 }) => {
   const toast = useToast();
-
-  // Mock data for players
-  const players = [
-    { name: "Player 1", hasPaid: false },
-    { name: "Player 2", hasPaid: true },
-    //...other players
-  ];
   const searchParams = useSearchParams();
-
   const id = searchParams.get("id");
-
   const [playerData, setPlayerData] = useState([]);
 
   const getPlayers = async () => {
@@ -44,7 +35,7 @@ const ViewParticipants = ({
   };
 
   useEffect(() => {
-    console.log("viewParticipants.jsx component has been mounted")
+    console.log("viewParticipants.jsx component has been mounted");
     getPlayers();
   }, [id]);
 
@@ -58,11 +49,18 @@ const ViewParticipants = ({
             <Text fontSize="xl" mb="4">
               Players
             </Text>
-            {playerData.length !== 0 ? playerData.map((player, index) => (
-              <Box key={index} p={3} boxShadow="md" mb={3}>
-                {player.player.name}
-              </Box>
-            )) : <Text flex="1" p={3} boxShadow="md"> Currently No Players Have Signed Up </Text>}
+            {playerData.length !== 0 ? (
+              playerData.map((player, index) => (
+                <Box key={index} p={3} boxShadow="md" mb={3}>
+                  {player.player.name}
+                </Box>
+              ))
+            ) : (
+              <Text flex="1" p={3} boxShadow="md">
+                {" "}
+                Currently No Players Have Signed Up{" "}
+              </Text>
+            )}
           </Box>
 
           {/* Action and Status Section */}

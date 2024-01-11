@@ -18,6 +18,10 @@ const getSingleMatch = asyncHandler(async (req, res) => {
     where: {
       id: id,
     },
+    include:{
+      playersTeamA: true,
+      playersTeamB: true,
+    }
   });
 
   return res.status(StatusCodes.OK).json(singleMatch);

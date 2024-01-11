@@ -67,7 +67,7 @@ const getPlayerByEmail = asyncHandler(async (req, res) => {
 const createPlayer = asyncHandler(async (req, res) => {
   console.log("createPlayer called with:", req.body);
 
-  const { phoneNumber, ...otherFields } = req.body;
+  const { clerkUserId, phoneNumber, ...otherFields } = req.body;
 
   const newPlayer = await prisma.player.create({
     data: {...otherFields},

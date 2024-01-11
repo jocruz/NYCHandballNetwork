@@ -3,7 +3,7 @@ import FetchTournaments from "@/app/components/tournaments/FetchTournaments";
 import { SimpleGrid } from "@chakra-ui/react";
 import TournamentCard from "./TournamentCard";
 
-const PlayerTournaments = () => {
+const PlayerTournaments = ({user}) => {
   let { tournaments, error, isLoading } = FetchTournaments();
 
   const activeTournaments = tournaments.filter(
@@ -17,7 +17,7 @@ const PlayerTournaments = () => {
     <div>
       <SimpleGrid columns={3} spacing={4}>
         {activeTournaments.map((tournament) => (
-          <TournamentCard key={tournament.id} {...tournament} />
+          <TournamentCard key={tournament.id} {...tournament} user={user} />
         ))}
       </SimpleGrid>
     </div>
