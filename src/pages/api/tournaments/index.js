@@ -51,7 +51,9 @@ const getTournamentDetails = asyncHandler(async (req, res) => {
   const { id } = req.query;
   console.log("Inside getTournamentDetails, ID: ", id);
   if (!id) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ message: "Tournament ID is required" });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "Tournament ID is required" });
   }
 
   const tournamentDetails = await prisma.tournament.findUnique({
@@ -62,20 +64,19 @@ const getTournamentDetails = asyncHandler(async (req, res) => {
           player: true, // Include details about the player
         },
       },
-      
     },
   });
 
   if (!tournamentDetails) {
-    return res.status(StatusCodes.NOT_FOUND).json({ message: "Tournament not found" });
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ message: "Tournament not found" });
   }
-  
+
   return res.status(StatusCodes.OK).json(tournamentDetails);
 }, "TournamentDetails");
 
-
 // get registered players from the current tournament:
-
 
 /**
  * Creates a new tournament.
@@ -86,7 +87,8 @@ const getTournamentDetails = asyncHandler(async (req, res) => {
  * @returns {Promise<Response>} The response object with the created tournament data.
  */
 const createTournament = asyncHandler(async (req, res) => {
-  const { name, date, type, totalPlayers, location, userDatabaseId, price } = req.body;
+  const { name, date, type, totalPlayers, location, userDatabaseId, price } =
+    req.body;
 
   const newTournament = await prisma.tournament.create({
     data: {
@@ -201,7 +203,8 @@ const handler = async (req, res) => {
       if (id) {
         await getTournamentDetails(req, res);
       } else {
-        await getAllTournaments(req, res);}
+        await getAllTournaments(req, res);
+      }
       break;
     case "POST":
       // Handle POST requests with the createTournament function
