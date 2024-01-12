@@ -6,6 +6,8 @@ const getAllMatches = asyncHandler(async (req, res) => {
   const allMatches = await prisma.match.findMany({
     include: {
       tournament: true, // Include tournament data for each match
+      playersTeamA: true,
+      playersTeamB: true,
     },
   });
   return res.status(StatusCodes.OK).json(allMatches);
@@ -22,11 +24,11 @@ const getSingleMatch = asyncHandler(async (req, res) => {
     where: {
       id: id,
     },
-    include:{
+    include: {
       tournament: true,
       playersTeamA: true,
       playersTeamB: true,
-    }
+    },
   });
 
   return res.status(StatusCodes.OK).json(singleMatch);
@@ -75,8 +77,7 @@ const createMatches = asyncHandler(async (req, res) => {
 }, "Match");
 
 const updateMatch = asyncHandler(async (req, res) => {
-  const { id } = req.query;
-  const updateData = req.body;
+  const { id } = req.body;
 
   if (!id) {
     const error = new Error("Match ID must be provided");
@@ -84,24 +85,16 @@ const updateMatch = asyncHandler(async (req, res) => {
     throw error;
   }
 
-  // Check if the match exists
-  const matchExists = await prisma.match.findUnique({
-    where: { id: id },
-  });
-
-  if (!matchExists) {
-    const error = new Error("Match not found");
-    error.statusCode = StatusCodes.NOT_FOUND;
-    throw error;
-  }
-
   // Update the match
   const updatedMatch = await prisma.match.update({
     where: { id: id },
-    data: updateData,
+    data: req.body,
   });
 
-  return res.status(StatusCodes.OK).json(updatedMatch);
+  return res.status(StatusCodes.OK).json({
+    message: `the tournament was updated at ID ${id}`,
+    match: updatedMatch,
+  });
 }, "Match");
 
 const deleteMatch = asyncHandler(async (req, res) => {
@@ -152,9 +145,9 @@ const handler = async (req, res) => {
       break;
     case "PUT":
       // Handle PUT requests with the updateMatches function
-      if (id) {
-        await updateMatch(req, res);
-      }
+
+      await updateMatch(req, res);
+
       break;
     case "DELETE":
       // Handle DELETE requests with the deleteMatches function

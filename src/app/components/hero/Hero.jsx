@@ -22,15 +22,13 @@ export default function Hero() {
           fontSize={{ base: "3xl", sm: "4xl", md: "6xl" }}
           lineHeight={"110%"}
         >
-          Explore Tournaments, Join the Action, Call Next{" "}
+          Create, Update, and Organize Handball Tournaments
           <Text as={"span"} color={"orange.400"}>
             made easy
           </Text>
         </Heading>
         <Text color={"gray.500"} maxW={"3xl"}>
-          Always be up to date with tournaments that are happening. Be able to
-          ref a game easier. Be able to call next and see who has next and who
-          has last.
+         Best Tournament Solution for Handball. Create Tournament, Matches, and eliminate the use of paper score keeping!
         </Text>
         <Stack spacing={6} direction={"row"}>
           <Button

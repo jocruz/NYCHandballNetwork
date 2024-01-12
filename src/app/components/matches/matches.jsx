@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Select, Box, Flex, Text, Button } from "@chakra-ui/react";
+import { Select, Box, Text, Button, useToast } from "@chakra-ui/react";
+import { useRouter, usePathname } from "next/navigation";
+
 import axios from "axios";
 
 const Matches = () => {
@@ -9,6 +11,9 @@ const Matches = () => {
   const [error, setError] = useState(null);
   const [directorTournaments, setDirectorTournaments] = useState(null);
   const [selectedTournament, setSelectedTournament] = useState(null);
+  const router = useRouter();
+  const pathname = usePathname();
+  const toast = useToast();
 
   useEffect(() => {
     const fetchMatches = async () => {
@@ -40,37 +45,37 @@ const Matches = () => {
   if (error) return <p>Error: {error.message}</p>;
 
   console.log(directorTournaments);
+  console.log(window.location.origin);
 
   const handleTournamentChange = (e) => {
     const id = e.target.value;
     setSelectedTournament(id);
   };
 
-  const tm = matches.map((match) => {
-    if (match.tournament.id === selectedTournament) {
-      return (
-        <div key={match.id}>
-          <Box
-            key={match.id}
-            p={5}
-            shadow="md"
-            borderWidth="1px"
-            flex="1"
-            borderRadius="md"
-            m={2}
-          >
-            <Text>{match.id}</Text>
-            <Button>Ref this game!</Button>
-          </Box>
-        </div>
-      );
+  const handleRefGame = (matchId) => {
+    router.push(`/score-keeper?matchId=${matchId}`);
+  };
+
+  const copyRefMatchUrl = (matchId) => {
+    const matchUrl = `${window.location.origin}/score-keeper?matchId=${matchId}`;
+    navigator.clipboard.writeText(matchUrl);
+
+    if (navigator.clipboard) {
+      toast({
+        title: "Update Successful.",
+        description: "You've successfully copied the URL.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     }
-  });
+  };
 
   const filteredMatches = selectedTournament
     ? matches.filter((match) => match.tournament.id === selectedTournament)
     : [];
 
+  console.log(filteredMatches);
   return (
     <section>
       <Select placeholder="Select tournament" onChange={handleTournamentChange}>
@@ -92,8 +97,21 @@ const Matches = () => {
             borderRadius="md"
             m={2}
           >
-            <Text>{match.id}</Text>
-            <Button>Ref this game!</Button>
+            <Text>
+              {" "}
+              {match?.playersTeamA?.length > 0
+                ? match.playersTeamA[0].name
+                : "No Player"}
+              VS
+              {match?.playersTeamB?.length > 0
+                ? match.playersTeamB[0].name
+                : "No Player"}
+              {match.status}
+            </Text>
+            <Button onClick={() => handleRefGame(match.id)}>
+              Ref this game!
+            </Button>
+            <Button onClick={() => copyRefMatchUrl(match.id)}>Copy URL</Button>
           </Box>
         );
       })}
