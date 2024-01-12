@@ -7,6 +7,8 @@ const Matches = () => {
   const [matches, setMatches] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [directorTournaments, setDirectorTournaments] = useState(null);
+  const [selectedTournament, setSelectedTournament] = useState(null);
 
   useEffect(() => {
     const fetchMatches = async () => {
@@ -14,33 +16,39 @@ const Matches = () => {
         const allMatches = await axios.get("/api/matches");
         setMatches(allMatches.data);
         setLoading(false);
+
+        // Extract unique tournaments using an object
+        const tournamentsObj = {};
+        allMatches.data.forEach((match) => {
+          // if the tournamentsobj object does not have the key value of the tournament.id then
+          // we are going to add in the key value with the match.tournament.id and assign the value to that key with the object
+          if (!tournamentsObj[match.tournament.id]) {
+            tournamentsObj[match.tournament.id] = match.tournament;
+          }
+        });
+        // we then set in our state array only the values of the object
+        setDirectorTournaments(Object.values(tournamentsObj));
       } catch (error) {
         setError(error);
       }
     };
+
     fetchMatches();
   }, []);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const fetchMatchDetails = async (matchId) => {
-    try {
-      const response = await axios.get(`/api/matches?${matchId}`);
-      // Process the response, which includes the match and associated players
-      // ...
-    } catch (error) {
-      console.error('Error fetching match details:', error);
-      // Handle error appropriately
-    }
+  console.log(directorTournaments);
+
+  const handleTournamentChange = (e) => {
+    const id = e.target.value;
+    setSelectedTournament(id);
   };
 
-  
-  
-  return (
-    
-    <section>
-      {matches.map((match) => (
+  const tm = matches.map((match) => {
+    if (match.tournament.id === selectedTournament) {
+      return (
         <div key={match.id}>
           <Box
             key={match.id}
@@ -52,12 +60,43 @@ const Matches = () => {
             m={2}
           >
             <Text>{match.id}</Text>
-            <Button>
-              Ref this game!
-            </Button>
+            <Button>Ref this game!</Button>
           </Box>
         </div>
-      ))}
+      );
+    }
+  });
+
+  const filteredMatches = selectedTournament
+    ? matches.filter((match) => match.tournament.id === selectedTournament)
+    : [];
+
+  return (
+    <section>
+      <Select placeholder="Select tournament" onChange={handleTournamentChange}>
+        {directorTournaments.map((tournament) => (
+          <option key={tournament.id} value={tournament.id}>
+            {tournament.name}
+          </option>
+        ))}
+      </Select>
+
+      {filteredMatches.map((match) => {
+        return (
+          <Box
+            key={match.id}
+            p={5}
+            shadow="md"
+            borderWidth="1px"
+            flex="1"
+            borderRadius="md"
+            m={2}
+          >
+            <Text>{match.id}</Text>
+            <Button>Ref this game!</Button>
+          </Box>
+        );
+      })}
     </section>
   );
 };

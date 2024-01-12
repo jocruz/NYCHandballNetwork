@@ -3,7 +3,11 @@ import prisma from "../../../db/prismaClient";
 import { asyncHandler } from "@/pages/utils/asyncHandler";
 
 const getAllMatches = asyncHandler(async (req, res) => {
-  const allMatches = await prisma.match.findMany();
+  const allMatches = await prisma.match.findMany({
+    include: {
+      tournament: true, // Include tournament data for each match
+    },
+  });
   return res.status(StatusCodes.OK).json(allMatches);
 }, "Match");
 
@@ -19,6 +23,7 @@ const getSingleMatch = asyncHandler(async (req, res) => {
       id: id,
     },
     include:{
+      tournament: true,
       playersTeamA: true,
       playersTeamB: true,
     }
