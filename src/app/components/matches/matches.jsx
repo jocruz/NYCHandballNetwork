@@ -97,21 +97,29 @@ const Matches = () => {
             borderRadius="md"
             m={2}
           >
-            <Text>
-              {" "}
-              {match?.playersTeamA?.length > 0
-                ? match.playersTeamA[0].name
-                : "No Player"}
-              VS
-              {match?.playersTeamB?.length > 0
-                ? match.playersTeamB[0].name
-                : "No Player"}
-              {match.status}
-            </Text>
-            <Button onClick={() => handleRefGame(match.id)}>
-              Ref this game!
-            </Button>
-            <Button onClick={() => copyRefMatchUrl(match.id)}>Copy URL</Button>
+          <Text mb={2} fontWeight="bold">
+            {match?.playersTeamA?.length > 0
+              ? match.playersTeamA[0].name
+              : "No Player"}{" "}
+            VS{" "}
+            {match?.playersTeamB?.length > 0
+              ? match.playersTeamB[0].name
+              : "No Player"}
+          </Text>
+          <Text mb={2}>Status of the Game: {match.status}</Text>
+          <Text mb={4} fontSize="xl" fontWeight="semibold">
+            {match?.scoresTeamA} - {match?.scoresTeamB}
+          </Text>
+          <Button
+            colorScheme="blue"
+            mr={3}
+            onClick={() => handleRefGame(match.id)}
+          >
+            Ref this game!
+          </Button>
+          <Button colorScheme="teal" onClick={() => copyRefMatchUrl(match.id)}>
+            Copy URL
+          </Button>
           </Box>
         );
       })}

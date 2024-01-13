@@ -104,8 +104,8 @@ model Match {
   gameType      Int?
   playersTeamA  Player[]   @relation("PlayersTeamA")
   playersTeamB  Player[]   @relation("PlayersTeamB")
-  scoresTeamA   Int?
-  scoresTeamB   Int?
+  scoresTeamA   Int?       @default(0)
+  scoresTeamB   Int?       @default(0)
   status        String?    @default("PENDING")
   scheduledTime DateTime?
   tournament    Tournament @relation(fields: [tournamentId], references: [id])

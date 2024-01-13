@@ -5,7 +5,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Matches from "../matches/matches";
 
-const MatchesManager = ({ user }) => {
+const AssignMatches = ({ user }) => {
   const [selectedTournamentId, setSelectedTournamentId] = useState(null);
   const [matches, setMatches] = useState([]);
   const [participants, setParticipants] = useState([]);
@@ -161,4 +161,4 @@ const MatchesManager = ({ user }) => {
   );
 };
 
-export default MatchesManager;
+export default AssignMatches;

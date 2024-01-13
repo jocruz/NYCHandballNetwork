@@ -40,11 +40,11 @@ import MatchesManager from "../tournaments/MatchesManager";
 import Matches from "../matches/matches";
 
 const DirectorLinkItems = [
-  { name: "Home", icon: FiHome },
+  // { name: "Home", icon: FiHome },
   { name: "My Tournaments", icon: FiTrendingUp },
   { name: "Create Tournament", icon: FiCompass },
-  { name: "Tournament Bracket", icon: FiCompass },
-  {name:"Matches Manager", icon: FiCompass},
+  { name: "Assign Matches", icon: FiCompass },
+  { name: "Matches Manager", icon: FiCompass },
 ];
 const PlayerLinkItems = [
   { name: "Home", icon: FiHome },
@@ -62,7 +62,7 @@ const SidebarContent = ({ onClose, onSetActive, user, ...rest }) => {
     console.log("SideBar.jsx Mounted", user);
 
     return () => {
-      console.log("sideBar.jsx Unmounting",);
+      console.log("sideBar.jsx Unmounting");
     };
   }, []);
   return (
@@ -219,7 +219,7 @@ const MobileNav = ({ onOpen, user, ...rest }) => {
 
 const SidebarWithHeader = ({ user }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [activeComponent, setActiveComponent] = useState("Home");
+  const [activeComponent, setActiveComponent] = useState("My Tournaments");
 
   return (
     //useColorModeValue is a chakra color hook that provide lightMode,darkMode value
@@ -256,11 +256,12 @@ const SidebarWithHeader = ({ user }) => {
             user.publicMetadata.role === "player" && (
               <PlayerTournaments user={user} />
             )}
-          {activeComponent === "Tournament Bracket" &&
+          {activeComponent === "Assign Matches" &&
             user.publicMetadata.role === "director" && (
               <MatchesManager user={user} />
             )}
-            {activeComponent ==="Matches Manager" && user.publicMetadata.role==="director" && (<Matches/>)}
+          {activeComponent === "Matches Manager" &&
+            user.publicMetadata.role === "director" && <Matches />}
         </div>
       </Box>
     </Box>
