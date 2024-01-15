@@ -34,6 +34,10 @@ function ScoreKeeper() {
   const [timeOutPlayer, setTimeOutPlayer] = useState("none");
   const searchParams = useSearchParams();
   const id = searchParams.get("matchId");
+  const [playerAName, setPlayerAName] = useState("");
+  const [playerBName, setPlayerBName] = useState("");
+
+
 
   useEffect(() => {
     let timer;
@@ -46,14 +50,14 @@ function ScoreKeeper() {
 
     const getCurrentMatch = async () => {
       try {
-        console.log(id);
         const response = await axios.get(`/api/matches/?id=${id}`);
         const data = response.data;
-        console.log(data);
         setMatch(data);
         setScoreA(data.scoresTeamA);
         setScoreB(data.scoresTeamB);
       } catch (err) {
+        setPlayerAName("Player A")
+        setPlayerBName("Player B")
         console.log(err);
       }
     };
@@ -71,7 +75,9 @@ function ScoreKeeper() {
     } else {
       status = "PENDING";
     }
-    axios.put("/api/matches", { id: id, status: status });
+    if (id && status) {
+      axios.put("/api/matches", { id: id, status: status });
+    }
   }
 
   const incrementScore = async (team) => {
@@ -80,7 +86,9 @@ function ScoreKeeper() {
         const newScoreA = scoreA + 1;
         setScoreA(newScoreA);
         try {
-          axios.put("/api/matches", { id: id, scoresTeamA: newScoreA });
+          if (id && newScoreA) {
+            axios.put("/api/matches", { id: id, scoresTeamA: newScoreA });
+          }
         } catch (err) {
           console.log(err);
         }
@@ -88,11 +96,14 @@ function ScoreKeeper() {
       } else if (team === "B" && scoreB < 21) {
         const newScoreB = scoreB + 1;
         setScoreB(newScoreB);
-        try {
-          axios.put("/api/matches", { id: id, scoresTeamB: newScoreB });
-        } catch (err) {
-          console.log(err);
+        if (id && newScoreB) {
+          try {
+            axios.put("/api/matches", { id: id, scoresTeamB: newScoreB });
+          } catch (err) {
+            console.log(err);
+          }
         }
+
         updateMatchStatus(scoreA, newScoreB);
       }
     }
@@ -103,20 +114,26 @@ function ScoreKeeper() {
       if (team === "A" && scoreA > 0) {
         const newScoreA = scoreA - 1;
         setScoreA(newScoreA);
-        try {
-          axios.put("/api/matches", { id: id, scoresTeamA: newScoreA });
-        } catch (err) {
-          console.log(err);
+        if (id && newScoreA) {
+          try {
+            axios.put("/api/matches", { id: id, scoresTeamA: newScoreA });
+          } catch (err) {
+            console.log(err);
+          }
         }
+
         updateMatchStatus(newScoreA, scoreB);
       } else if (team === "B" && scoreB > 0) {
         const newScoreB = scoreB - 1;
         setScoreB(newScoreB);
-        try {
-          axios.put("/api/matches", { id: id, scoresTeamB: newScoreB });
-        } catch (err) {
-          console.log(err);
+        if (id && newScoreB) {
+          try {
+            axios.put("/api/matches", { id: id, scoresTeamB: newScoreB });
+          } catch (err) {
+            console.log(err);
+          }
         }
+
         updateMatchStatus(scoreA, newScoreB);
       }
     }
@@ -201,7 +218,7 @@ function ScoreKeeper() {
               <Text>Time Outs Left: {3 - timeoutCounterA}</Text>
               {timeoutCounterA !== 3 ? (
                 <Button
-                  onClick={() => startTimeout("A", match.playersTeamA[0].name)}
+                  onClick={() => startTimeout("A", (match.playersTeamA[0].name))}
                 >
                   Time Out
                 </Button>

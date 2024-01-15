@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Container,
-  Heading,
-  Stack,
-  Text,
-  Button,
-} from "@chakra-ui/react";
+import { Container, Heading, Stack, Text, Button } from "@chakra-ui/react";
 
 export default function Hero() {
   return (
@@ -27,8 +21,9 @@ export default function Hero() {
             made easy
           </Text>
         </Heading>
-        <Text color={"gray.500"} maxW={"3xl"}>
-         Best Tournament Solution for Handball. Create Tournament, Matches, and eliminate the use of paper score keeping!
+        <Text fontWeight={600} color={"gray.800"} maxW={"3xl"}>
+          Best Tournament Solution for Handball. Create Tournament, Matches, and
+          eliminate the use of paper score keeping!
         </Text>
         <Stack spacing={6} direction={"row"}>
           <Button
