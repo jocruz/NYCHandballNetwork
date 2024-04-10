@@ -1,8 +1,3 @@
-
-Creating a `README.md` file for your sports web application, with emphasis on structure, clarity, and aesthetic appeal using emojis, can help attract potential employers and provide a comprehensive overview of your project. Here’s a structured template that you can customize according to your project details:
-
----
-
 # 🏐 Handball Hub - Sports Web Application
 
 ## Introduction
