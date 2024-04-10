@@ -52,11 +52,31 @@
 
 ### Sidebar Navigation
 
-- Dynamic sidebar that changes based on user role (player or director).
-- Key features like tournament management, match assignments, and player registrations are easily accessible.
+## 📐 Application Layout: Sidebar Navigation
 
-Here's a dedicated section for the Prisma schema in your `README.md` file, focusing on explaining the database design and the relationships between the different models:
+### Overview
+The application uses a responsive layout managed by `SidebarWithHeader`, which includes a sidebar for navigation (`SidebarContent`) and a mobile navigation bar (`MobileNav`), ensuring accessibility across devices.
 
+### Features
+
+- **SidebarContent**: Offers role-based navigation links, with `DirectorLinkItems` and `PlayerLinkItems` for easy access to application features.
+- **MobileNav**: Provides a collapsible menu for mobile users, utilizing Chakra UI's `useDisclosure` for drawer state management.
+
+### Responsive Design
+
+- On larger screens, the sidebar is always visible, allowing constant access to navigation.
+- On smaller screens, a drawer toggles to display navigation links, optimizing space and improving user experience.
+
+### Technical Highlights
+
+- Implemented with Chakra UI for styling and responsiveness.
+- Uses React icons to enhance navigation intuitiveness.
+- `useDisclosure` from Chakra UI controls the sidebar's visibility on mobile devices, ensuring a seamless transition between open and closed states.
+
+### Interaction
+
+- Permanent sidebar navigation on desktop.
+- Collapsible drawer for mobile, activated by a menu button, provides space-efficient navigation.
 ---
 
 ## 🗂 Prisma Schema Overview
