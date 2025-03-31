@@ -1,149 +1,102 @@
-# 🏐 Handball Hub - Sports Web Application
+# Handball Hub - Sports Web Application
 
-## Introduction
+## Project Overview
 
-🎯 **Project Aim**: Handball Hub aims to fill the void in the handball community by providing a comprehensive web application dedicated to the sport. Currently, there's a lack of digital infrastructure to track player rankings, tournament results, and general handball information. Handball Hub addresses these needs by offering features like player stats tracking, tournament management, and a score-keeping application for referees.
+Handball Hub is designed to enhance the handball community by providing a dedicated digital platform for players, referees, and tournament directors. The application addresses the current lack of structured digital resources for tracking player rankings, tournament results, and general handball information. It includes player statistics, tournament management tools, and a score-keeping interface specifically for referees.
 
-## Features
+## Key Features
 
-- **Player Dashboard**: Allows players to sign in, express interest in tournaments, and register for them.
-- **Director Dashboard**: Enables tournament directors to create events, manage tournaments, and update match results.
-- **Score Keeping**: A dedicated module for referees to keep track of game scores.
-- **Data Management**: Robust backend with Prisma and PostgreSQL to manage player and tournament data effectively.
+- **Player Dashboard**: Allows player registration, tournament interest indication, and event participation management.
+- **Director Dashboard**: Enables tournament directors to manage events, organize tournaments, and update match outcomes.
+- **Scorekeeping Module**: Provides referees with a specialized tool for managing live scores.
+- **Comprehensive Data Management**: Efficient backend using Prisma and PostgreSQL for secure, reliable data handling.
 
-## Tech Stack
+## Technology Stack
 
-- **Frontend**: React JS, NextJS
-- **Backend**: Prisma, PostgreSQL
+- **Frontend**: React.js, Next.js
+- **Backend**: Prisma ORM, PostgreSQL
 - **Authentication**: Clerk Auth
-- **Styling**: Chakra UI (as inferred from the sidebar component)
+- **Styling Framework**: Chakra UI
 
-## API Highlights
+## API Endpoints
 
 ### Matches API
-
-- **GET `/api/matches`**: Retrieve all matches with detailed tournament and player information.
-- **POST `/api/matches`**: Create new match entries.
-- **PUT `/api/matches`**: Update match details.
-- **DELETE `/api/matches`**: Remove match records.
+- `GET /api/matches`: Retrieve detailed match information.
+- `POST /api/matches`: Create new matches.
+- `PUT /api/matches`: Update existing matches.
+- `DELETE /api/matches`: Delete match records.
 
 ### Players API
-
-- **GET `/api/players`**: Fetch all player details or a single player by ID/email.
-- **POST `/api/players`**: Register new players or sign them up for tournaments.
-- **PUT `/api/players`**: Update player information.
-- **DELETE `/api/players`**: Delete player records.
+- `GET /api/players`: Retrieve player information.
+- `POST /api/players`: Register new players or tournament sign-ups.
+- `PUT /api/players`: Update player details.
+- `DELETE /api/players`: Remove player entries.
 
 ### Tournament Directors API
-
-- **GET `/api/tournament-directors`**: Access details of all tournament directors or a specific one.
-- **POST `/api/tournament-directors`**: Add new tournament directors.
-- **PUT `/api/tournament-directors`**: Modify director information.
-- **DELETE `/api/tournament-directors`**: Remove director entries.
+- `GET /api/tournament-directors`: Access director information.
+- `POST /api/tournament-directors`: Add tournament directors.
+- `PUT /api/tournament-directors`: Update director details.
+- `DELETE /api/tournament-directors`: Delete director records.
 
 ### Tournaments API
+- `GET /api/tournaments`: Retrieve tournament details.
+- `POST /api/tournaments`: Create new tournaments.
+- `PUT /api/tournaments`: Update tournament details.
+- `DELETE /api/tournaments`: Remove tournament records.
 
-- **GET `/api/tournaments`**: List all tournaments or get details of a specific tournament.
-- **POST `/api/tournaments`**: Create a new tournament.
-- **PUT `/api/tournaments`**: Update tournament details.
-- **DELETE `/api/tournaments`**: Delete tournament records.
+## User Interface and Design
 
-## User Interface
+### Responsive Navigation
+The application features responsive sidebar navigation:
+- **Desktop View**: Persistent sidebar for easy navigation.
+- **Mobile View**: Collapsible drawer navigation, optimized for mobile usability.
 
-### Sidebar Navigation
+### Technical Implementation
+- Built with Chakra UI components for responsive design.
+- React Icons enhance navigation clarity.
+- Chakra UI's `useDisclosure` hook manages sidebar state transitions seamlessly.
 
-## 📐 Application Layout: Sidebar Navigation
+## Database Schema
 
-### Overview
-The application uses a responsive layout managed by `SidebarWithHeader`, which includes a sidebar for navigation (`SidebarContent`) and a mobile navigation bar (`MobileNav`), ensuring accessibility across devices.
+The application's backend is structured around a clear, relational Prisma schema to efficiently manage and organize data:
 
-### Features
+### Player
+- Stores player information including identifiers, rankings, and tournament associations.
 
-- **SidebarContent**: Offers role-based navigation links, with `DirectorLinkItems` and `PlayerLinkItems` for easy access to application features.
-- **MobileNav**: Provides a collapsible menu for mobile users, utilizing Chakra UI's `useDisclosure` for drawer state management.
+### Tournament Director
+- Maintains director details and manages associations with various tournaments.
 
-### Responsive Design
+### Tournament
+- Captures tournament-specific information, associated players, matches, and linked tournament directors.
 
-- On larger screens, the sidebar is always visible, allowing constant access to navigation.
-- On smaller screens, a drawer toggles to display navigation links, optimizing space and improving user experience.
+### Match
+- Contains match-specific data including types, scores, statuses, and related tournament/player information.
 
-### Technical Highlights
+### PlayerTournament (Junction Table)
+- Manages player registrations and payment status for tournaments.
 
-- Implemented with Chakra UI for styling and responsiveness.
-- Uses React icons to enhance navigation intuitiveness.
-- `useDisclosure` from Chakra UI controls the sidebar's visibility on mobile devices, ensuring a seamless transition between open and closed states.
+### Timeout
+- Records details about timeouts in matches, associating them with specific matches and players.
 
-### Interaction
+### Enumerations
+- Defines standardized enums such as `GameType`, `MatchType`, and `MatchStatus` to ensure consistency and data integrity.
 
-- Permanent sidebar navigation on desktop.
-- Collapsible drawer for mobile, activated by a menu button, provides space-efficient navigation.
----
+## Installation and Running the Application
 
-## 🗂 Prisma Schema Overview
+1. **Installation**:
+   ```bash
+   git clone <repository-url>
+   cd handball-hub
+   npm install
+   ```
 
-The Prisma schema defines the structure of the database and the relationships between the different entities in the Handball Hub application. Here’s an overview of the main models and their functionalities:
----
+2. **Environment Setup**:
+   Configure necessary environment variables in a `.env` file.
 
-This section highlights the logical structure and relationships within your database, helping readers understand how the application manages and relates its data.
+3. **Starting the Development Server**:
 
-### Player Model
+   ```bash
+   npm run dev
+   ```
 
-- **Attributes**: Includes basic information like `id`, `name`, `email`, and rankings like `categoryRank` and `overallRank`.
-- **Relationships**:
-  - **Tournaments**: Players can register for multiple tournaments (`PlayerTournament` relation).
-  - **Matches**: Players can be part of multiple matches, either as team A or team B.
-
-### Tournament Director Model
-
-- **Attributes**: Stores information about tournament directors, including `id`, `name`, `email`, and `phoneNumber`.
-- **Relationships**:
-  - **Tournaments**: A director can manage multiple tournaments.
-
-### Tournament Model
-
-- **Attributes**: Captures details of tournaments like `id`, `name`, `date`, and `location`.
-- **Relationships**:
-  - **Players**: Maintains a list of players who have registered for the tournament.
-  - **Matches**: Contains all matches that are part of the tournament.
-  - **Director**: Links to the tournament director managing the event.
-
-### Match Model
-
-- **Attributes**: Includes `id`, `matchType`, `gameType`, `scores`, and `status`.
-- **Relationships**:
-  - **Players**: Connects to players participating in the match.
-  - **Tournament**: Associates the match with a specific tournament.
-
-### PlayerTournament Model (Junction Table)
-
-- **Purpose**: Manages the many-to-many relationship between `Player` and `Tournament` models.
-- **Attributes**: Includes `playerId`, `tournamentId`, and `hasPaid` to track registration and payment status.
-
-### Timeout Model
-
-- **Attributes**: Manages timeout information within matches, including `timeoutId`, `timeoutType`, and `timeoutDuration`.
-- **Relationships**:
-  - **Match**: Links to the match where the timeout occurred.
-  - **Player**: Associates the timeout with the player who called it.
-
-### Enums
-
-Defines `GameType`, `MatchType`, and `MatchStatus` to standardize the values in the database and ensure data integrity.
-
-
-1. **Installation**: Guide the user through setting up the project locally, including cloning the repository, installing dependencies, and setting up the environment variables.
-2. **Running the application**: Provide commands to run the app in development mode, build it for production, and start the production server.
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+   Open [http://localhost:3000](http://localhost:3000) in your browser to access the application.
